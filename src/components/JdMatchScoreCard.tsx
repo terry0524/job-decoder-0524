@@ -26,33 +26,29 @@ export function JdMatchScoreCard({ result }: JdMatchScoreCardProps) {
 
   return (
     <div className="space-y-5">
-      {/* Score Card */}
-      <Card className="border-primary/15 card-highlight">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2.5 text-base">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Target className="w-4 h-4 text-primary" />
+      {/* Score Card — Hero */}
+      <Card className="border-primary/20 card-highlight overflow-hidden">
+        <div className="relative">
+          {/* Subtle gradient accent bar */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary opacity-80" />
+          <CardHeader className="pb-2 pt-6">
+            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-[0.15em]">
+              <Target className="w-3.5 h-3.5 text-primary" />
+              JD Match Score
             </div>
-            <div>
-              <span className="font-bold">JD Match Score</span>
-              <span className="text-xs font-normal text-muted-foreground ml-2">이력서 매칭 점수</span>
+          </CardHeader>
+          <CardContent className="space-y-4 pb-6">
+            <div className="flex items-baseline gap-3">
+              <span className={`text-6xl font-extrabold tabular-nums tracking-tight ${scoreColor}`}>{score}</span>
+              <span className={`text-2xl font-bold ${scoreColor}`}>%</span>
+              <span className="text-sm font-medium text-muted-foreground ml-1">{scoreLabel}</span>
             </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-end gap-3">
-            <span className={`text-5xl font-extrabold tabular-nums ${scoreColor}`}>{score}%</span>
-            <span className="text-sm font-medium text-muted-foreground mb-1.5">{scoreLabel}</span>
-          </div>
-          <Progress value={score} className={`h-2.5 ${progressColor}`} />
-          {/* Score explanation */}
-          <div className="flex items-start gap-2 rounded-lg border border-border/40 bg-muted/30 px-3 py-2.5">
-            <Info className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" />
+            <Progress value={score} className={`h-2 rounded-full ${progressColor}`} />
             <p className="text-xs text-muted-foreground leading-relaxed">
               {scoreExplanation || '이력서와 채용공고 간 필수 기술, 우대 기술, ATS 키워드의 가중치 기반 매칭도입니다. 필수 기술은 3배 가중치가 적용됩니다.'}
             </p>
-          </div>
-        </CardContent>
+          </CardContent>
+        </div>
       </Card>
 
       {/* Two-column: Matching + Missing */}
