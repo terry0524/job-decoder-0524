@@ -153,18 +153,18 @@ const Index = () => {
           <div className="max-w-2xl mx-auto pt-16 pb-20">
             {/* Hero */}
             <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary text-xs font-semibold mb-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary text-xs font-semibold mb-5">
                 <Zap className="w-3.5 h-3.5" />
-                AI 기반 채용공고 분석
+                AI 기반 채용공고 분석 도구
               </div>
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-foreground">
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-3 text-foreground">
                 Job Decoder
               </h1>
-              <p className="text-base sm:text-lg text-muted-foreground max-w-md mx-auto leading-relaxed mb-2">
-                채용공고를 분석하여 필요한 기술과 지원 전략을 알려주는 AI 도구
+              <p className="text-sm sm:text-base font-medium text-muted-foreground max-w-md mx-auto mb-1">
+                채용공고를 분석하여 필수 기술, ATS 키워드, 지원 전략을 자동으로 도출합니다.
               </p>
-              <p className="text-sm text-muted-foreground/70 max-w-sm mx-auto">
-                채용공고를 붙여넣으면 필수 기술, ATS 키워드, 지원 전략을 자동으로 분석합니다.
+              <p className="text-xs text-muted-foreground/60 max-w-sm mx-auto">
+                채용공고를 붙여넣으면 몇 초 안에 전문 분석 리포트를 받아보세요.
               </p>
               <div className="flex items-center justify-center gap-5 mt-8 text-xs font-medium text-muted-foreground">
                 <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60">

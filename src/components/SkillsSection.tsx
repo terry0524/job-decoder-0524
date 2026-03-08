@@ -10,7 +10,7 @@ interface SkillsSectionProps {
 }
 
 export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnologies, responsibilities }: SkillsSectionProps) {
-  const sections = [
+  const skillSections = [
     {
       title: '필수 기술',
       subtitle: 'Required Skills',
@@ -18,8 +18,9 @@ export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnol
       icon: CheckCircle2,
       iconColor: 'text-destructive',
       iconBg: 'bg-destructive/10',
-      badgeStyle: 'bg-destructive/8 text-destructive border-destructive/20',
+      badgeStyle: 'bg-destructive/8 text-destructive border-destructive/20 hover:bg-destructive/15',
       highlight: true,
+      asBadges: true,
     },
     {
       title: '우대 기술',
@@ -28,8 +29,9 @@ export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnol
       icon: Star,
       iconColor: 'text-warning',
       iconBg: 'bg-warning/10',
-      badgeStyle: 'bg-warning/8 text-warning border-warning/20',
+      badgeStyle: 'bg-warning/8 text-warning border-warning/20 hover:bg-warning/15',
       highlight: false,
+      asBadges: true,
     },
     {
       title: '도구 및 기술',
@@ -38,19 +40,10 @@ export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnol
       icon: Wrench,
       iconColor: 'text-secondary',
       iconBg: 'bg-secondary/10',
-      badgeStyle: 'bg-secondary/8 text-secondary border-secondary/20',
+      badgeStyle: 'bg-secondary/8 text-secondary border-secondary/20 hover:bg-secondary/15',
       highlight: false,
+      asBadges: true,
     },
-    {
-      title: '주요 업무',
-      subtitle: 'Key Responsibilities',
-      items: responsibilities,
-      icon: Clipboard,
-      iconColor: 'text-primary',
-      iconBg: 'bg-primary/10',
-      badgeStyle: 'bg-primary/8 text-primary border-primary/20',
-      highlight: false,
-    }
   ];
 
   return (
@@ -65,8 +58,9 @@ export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnol
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {sections.map(({ title, subtitle, items, icon: Icon, iconColor, iconBg, badgeStyle, highlight }) => (
+      {/* Skills as badges in 3-col grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {skillSections.map(({ title, subtitle, items, icon: Icon, iconColor, iconBg, badgeStyle, highlight }) => (
           <Card key={title} className={highlight ? 'border-destructive/20 shadow-sm shadow-destructive/5' : 'border-border/60'}>
             <CardHeader className="pb-2.5">
               <CardTitle className="flex items-center gap-2 text-sm">
@@ -80,28 +74,44 @@ export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnol
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {title === '도구 및 기술' ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {items.map((item, idx) => (
-                    <Badge key={idx} variant="outline" className={`text-xs font-medium ${badgeStyle}`}>
-                      {item}
-                    </Badge>
-                  ))}
-                </div>
-              ) : (
-                <ul className="space-y-1.5">
-                  {items.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-sm">
-                      <span className={`mt-2 w-1 h-1 rounded-full shrink-0 ${highlight ? 'bg-destructive' : 'bg-muted-foreground/40'}`} />
-                      <span className="text-foreground/85">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <div className="flex flex-wrap gap-1.5">
+                {items.map((item, idx) => (
+                  <Badge key={idx} variant="outline" className={`text-xs font-medium transition-colors ${badgeStyle}`}>
+                    {item}
+                  </Badge>
+                ))}
+              </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Responsibilities as separate card */}
+      <Card className="border-border/60">
+        <CardHeader className="pb-2.5">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+              <Clipboard className="w-3.5 h-3.5 text-primary" />
+            </div>
+            <div>
+              <span className="font-semibold">주요 업무</span>
+              <span className="text-[10px] text-muted-foreground ml-1.5">Key Responsibilities</span>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+            {responsibilities.map((item, idx) => (
+              <div key={idx} className="flex items-start gap-2.5 p-2 rounded-md bg-muted/30 text-sm">
+                <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0 mt-0.5">
+                  {idx + 1}
+                </div>
+                <span className="text-foreground/85">{item}</span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
