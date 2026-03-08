@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Lightbulb, KeyRound, Star } from 'lucide-react';
+import { Lightbulb, KeyRound, Star, MapPin, ChevronRight } from 'lucide-react';
 import { JdMatchResult } from '@/lib/jdMatch';
 
 interface ResumeImprovementSectionProps {
@@ -8,7 +8,7 @@ interface ResumeImprovementSectionProps {
 }
 
 export function ResumeImprovementSection({ result }: ResumeImprovementSectionProps) {
-  const { matchingSkills, missingKeywords } = result;
+  const { matchingSkills, missingKeywords, resumePlacementTips } = result;
 
   if (missingKeywords.length === 0 && matchingSkills.length === 0) return null;
 
@@ -25,7 +25,7 @@ export function ResumeImprovementSection({ result }: ResumeImprovementSectionPro
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-5">
         {/* Add these keywords */}
         {missingKeywords.length > 0 && (
           <div className="space-y-2">
@@ -34,6 +34,7 @@ export function ResumeImprovementSection({ result }: ResumeImprovementSectionPro
                 <KeyRound className="w-2.5 h-2.5 text-destructive" />
               </div>
               <p className="text-xs font-bold text-foreground">Add these keywords</p>
+              <span className="text-[10px] text-muted-foreground">이력서에 추가할 키워드</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {missingKeywords.map((kw, idx) => (
@@ -49,14 +50,52 @@ export function ResumeImprovementSection({ result }: ResumeImprovementSectionPro
           </div>
         )}
 
+        {/* Where to add — placement tips */}
+        {resumePlacementTips && resumePlacementTips.length > 0 && (
+          <div className="space-y-3 pt-3 border-t border-border/30">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center">
+                <MapPin className="w-2.5 h-2.5 text-primary" />
+              </div>
+              <p className="text-xs font-bold text-foreground">Where to add them</p>
+              <span className="text-[10px] text-muted-foreground">키워드 배치 위치</span>
+            </div>
+            <div className="grid grid-cols-1 gap-2.5">
+              {resumePlacementTips.map((tip, idx) => (
+                <div key={idx} className="rounded-lg border border-border/40 bg-muted/30 px-3.5 py-3">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <ChevronRight className="w-3 h-3 text-primary" />
+                    <p className="text-[11px] font-bold text-foreground">{tip.section}</p>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mb-2 ml-4">{tip.description}</p>
+                  {tip.keywords.length > 0 && (
+                    <div className="flex flex-wrap gap-1 ml-4">
+                      {tip.keywords.map((kw, kIdx) => (
+                        <Badge
+                          key={kIdx}
+                          variant="outline"
+                          className="text-[10px] font-medium bg-primary/5 border-primary/20 text-primary"
+                        >
+                          {kw}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Recommended Skills to Highlight */}
         {matchingSkills.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-2 pt-3 border-t border-border/30">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded bg-success/10 flex items-center justify-center">
                 <Star className="w-2.5 h-2.5 text-success" />
               </div>
               <p className="text-xs font-bold text-foreground">Recommended Skills to Highlight</p>
+              <span className="text-[10px] text-muted-foreground">강조할 기술</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {matchingSkills.map((skill, idx) => (
@@ -72,28 +111,9 @@ export function ResumeImprovementSection({ result }: ResumeImprovementSectionPro
           </div>
         )}
 
-        {/* Where to add */}
-        {missingKeywords.length > 0 && (
-          <div className="space-y-2 pt-2 border-t border-border/30">
-            <p className="text-xs font-bold text-foreground">Where to add these keywords</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {[
-                { label: 'Skills section', desc: '기술 스택 목록에 추가' },
-                { label: 'Project description', desc: '프로젝트 설명에 자연스럽게 포함' },
-                { label: 'Professional summary', desc: '요약 문단에서 핵심 역량으로 언급' },
-              ].map((item, idx) => (
-                <div key={idx} className="rounded-lg border border-border/40 bg-muted/30 px-3 py-2">
-                  <p className="text-[11px] font-semibold text-foreground">{item.label}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Guidance */}
         <p className="text-[11px] text-muted-foreground leading-relaxed pt-2 border-t border-border/30">
-          이 키워드를 이력서 기술 스택이나 프로젝트 설명에 반영하면 매칭도를 높이는 데 도움이 됩니다.
+          💡 ATS(지원자 추적 시스템)는 이력서에서 정확한 키워드를 검색합니다. 위 키워드를 자연스럽게 이력서에 포함시키면 서류 통과율을 높일 수 있습니다.
         </p>
       </CardContent>
     </Card>
