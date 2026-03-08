@@ -12,12 +12,14 @@ import { StrategySection } from '@/components/StrategySection';
 import { ResumeKeywords } from '@/components/ResumeKeywords';
 import { AnalysisHistory } from '@/components/AnalysisHistory';
 import { AnalysisActions } from '@/components/AnalysisActions';
+import { JdMatchScoreCard } from '@/components/JdMatchScoreCard';
 import { analyzeJobPosting, generateResumeGuidance, generateApplicationStrategy, generateResumeKeywords, matchExperiences } from '@/lib/mockAnalysis';
+import { calculateJdMatch, JdMatchResult } from '@/lib/jdMatch';
 import { FullAnalysis, ExperienceMatch } from '@/types/jobAnalysis';
 import { getHistory, saveToHistory, HistoryEntry } from '@/lib/analysisHistory';
 import { sampleJobDescription } from '@/lib/sampleJobDescription';
 import { Button } from '@/components/ui/button';
-import { FileText, RotateCcw, Search, Zap, Shield, ArrowRight } from 'lucide-react';
+import { FileText, RotateCcw, Search, Zap, Shield } from 'lucide-react';
 import { ReportHeader } from '@/components/ReportHeader';
 import { Separator } from '@/components/ui/separator';
 
@@ -26,6 +28,7 @@ const Index = () => {
   const [experiences, setExperiences] = useState<string[]>([]);
   const [experienceMatches, setExperienceMatches] = useState<ExperienceMatch[]>([]);
   const [resumeKeywords, setResumeKeywords] = useState<string[]>([]);
+  const [jdMatchResult, setJdMatchResult] = useState<JdMatchResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
@@ -39,15 +42,16 @@ const Index = () => {
     setHistory(getHistory());
   }, []);
 
-  const applyAnalysis = useCallback((fullAnalysis: FullAnalysis, keywords: string[]) => {
+  const applyAnalysis = useCallback((fullAnalysis: FullAnalysis, keywords: string[], matchResult: JdMatchResult | null) => {
     setAnalysis(fullAnalysis);
     setResumeKeywords(keywords);
+    setJdMatchResult(matchResult);
     setExperiences([]);
     setExperienceMatches([]);
     setCurrentStep(3);
   }, []);
 
-  const handleSubmit = useCallback(async (data: { companyName: string; positionName: string; rawContent: string }) => {
+  const handleSubmit = useCallback(async (data: { companyName: string; positionName: string; rawContent: string; resumeText?: string }) => {
     setIsLoading(true);
     setCurrentStep(2);
     
@@ -57,6 +61,17 @@ const Index = () => {
     const resumeGuidance = generateResumeGuidance(analysisResult);
     const applicationStrategy = generateApplicationStrategy(analysisResult);
     const keywords = generateResumeKeywords(analysisResult);
+
+    let matchResult: JdMatchResult | null = null;
+    if (data.resumeText && data.resumeText.trim().length > 0) {
+      matchResult = calculateJdMatch(
+        data.resumeText,
+        analysisResult.requiredSkills,
+        analysisResult.preferredSkills,
+        analysisResult.atsKeywords,
+        analysisResult.toolsAndTechnologies
+      );
+    }
     
     const fullAnalysis: FullAnalysis = {
       jobPosting: {
@@ -72,14 +87,14 @@ const Index = () => {
       experienceMatches: []
     };
     
-    applyAnalysis(fullAnalysis, keywords);
+    applyAnalysis(fullAnalysis, keywords, matchResult);
     saveToHistory(fullAnalysis, keywords);
     refreshHistory();
     setIsLoading(false);
   }, [applyAnalysis, refreshHistory]);
 
   const handleHistorySelect = useCallback((entry: HistoryEntry) => {
-    applyAnalysis(entry.analysis, entry.resumeKeywords);
+    applyAnalysis(entry.analysis, entry.resumeKeywords, null);
   }, [applyAnalysis]);
 
   const handleAddExperience = useCallback((exp: string) => {
@@ -101,6 +116,7 @@ const Index = () => {
     setExperiences([]);
     setExperienceMatches([]);
     setResumeKeywords([]);
+    setJdMatchResult(null);
     setCurrentStep(1);
   };
 
@@ -178,7 +194,7 @@ const Index = () => {
           </div>
         ) : (
           <div className="py-10 space-y-8" ref={reportRef}>
-            {/* Report Header with Quick Summary */}
+            {/* Report Header */}
             <ReportHeader
               companyName={analysis.jobPosting.companyName}
               positionName={analysis.jobPosting.positionName}
@@ -190,6 +206,18 @@ const Index = () => {
               }
               summary={analysis.analysis.jobSummary}
             />
+
+            {/* JD Match Score (shown above the analysis if resume was provided) */}
+            {jdMatchResult && (
+              <>
+                <div className="flex items-center gap-3">
+                  <Separator className="flex-1" />
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">이력서 매칭</span>
+                  <Separator className="flex-1" />
+                </div>
+                <JdMatchScoreCard result={jdMatchResult} />
+              </>
+            )}
 
             {/* Section divider */}
             <div className="flex items-center gap-3">
