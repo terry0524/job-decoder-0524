@@ -94,7 +94,7 @@ export function JdMatchScoreCard({ result }: JdMatchScoreCardProps) {
               <span className="text-[10px] text-muted-foreground font-medium">{missingKeywords.length}개 누락</span>
             </div>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 px-4 pb-4">
             {missingKeywordGroups && missingKeywordGroups.length > 0 ? (
               missingKeywordGroups.map((group, gIdx) => {
                 const config = priorityConfig[group.priority];

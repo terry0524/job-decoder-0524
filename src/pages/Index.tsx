@@ -258,15 +258,17 @@ const Index = () => {
             </div>
 
             {/* 2. 필수/우대 기술 + 주요 업무 */}
-            <SkillsSection 
-              requiredSkills={analysis.analysis.requiredSkills}
-              preferredSkills={analysis.analysis.preferredSkills}
-              toolsAndTechnologies={analysis.analysis.toolsAndTechnologies}
-              responsibilities={analysis.analysis.coreResponsibilities}
-            />
+            <div className="mt-5">
+              <SkillsSection 
+                requiredSkills={analysis.analysis.requiredSkills}
+                preferredSkills={analysis.analysis.preferredSkills}
+                toolsAndTechnologies={analysis.analysis.toolsAndTechnologies}
+                responsibilities={analysis.analysis.coreResponsibilities}
+              />
+            </div>
 
             {/* 3. 지원 전략 + 대시보드 */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
               <div className="lg:col-span-2">
                 <StrategySection strategy={analysis.applicationStrategy} />
               </div>
@@ -286,14 +288,16 @@ const Index = () => {
             </div>
 
             {/* 4. 숨겨진 요구사항 */}
-            <HiddenRequirementsSection 
-              hiddenCriteria={analysis.analysis.hiddenCriteria}
-              requiredExperiences={analysis.analysis.requiredExperiences}
-              recruiterInsights={analysis.analysis.recruiterInsights}
-            />
+            <div className="mt-5">
+              <HiddenRequirementsSection 
+                hiddenCriteria={analysis.analysis.hiddenCriteria}
+                requiredExperiences={analysis.analysis.requiredExperiences}
+                recruiterInsights={analysis.analysis.recruiterInsights}
+              />
+            </div>
 
             {/* 5. 이력서 가이드 + 키워드 */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
               <div className="lg:col-span-2">
                 <ResumeGuidanceSection guidance={analysis.resumeGuidance} />
               </div>
