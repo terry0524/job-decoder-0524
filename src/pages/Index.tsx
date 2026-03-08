@@ -217,6 +217,7 @@ const Index = () => {
                   <Separator className="flex-1" />
                 </div>
                 <JdMatchScoreCard result={jdMatchResult} />
+                <ResumeImprovementSection result={jdMatchResult} />
               </>
             )}
 
