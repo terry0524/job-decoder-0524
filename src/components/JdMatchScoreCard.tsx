@@ -64,16 +64,15 @@ export function JdMatchScoreCard({ result }: JdMatchScoreCardProps) {
               <span className="text-[10px] text-muted-foreground font-medium">{matchingSkills.length}개 일치</span>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 pb-4">
             {matchingSkills.length > 0 ? (
               <div className="flex flex-wrap gap-1.5">
                 {matchingSkills.map((skill, idx) => (
                   <Badge
                     key={idx}
                     variant="outline"
-                    className="text-xs font-medium bg-success/8 border-success/20 text-success"
+                    className="text-[11px] font-medium bg-success/5 border-success/20 text-success"
                   >
-                    <CheckCircle2 className="w-2.5 h-2.5 mr-1" />
                     {skill}
                   </Badge>
                 ))}
@@ -85,17 +84,15 @@ export function JdMatchScoreCard({ result }: JdMatchScoreCardProps) {
         </Card>
 
         {/* Missing Keywords — grouped by priority */}
-        <Card className="border-destructive/20">
-          <CardHeader className="pb-2.5">
-            <CardTitle className="flex items-center gap-2 text-sm">
-              <div className="w-7 h-7 rounded-md bg-destructive/10 flex items-center justify-center">
-                <AlertTriangle className="w-3.5 h-3.5 text-destructive" />
+        <Card className="border-destructive/15">
+          <CardHeader className="pb-2 pt-4 px-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-destructive">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                Missing Keywords
               </div>
-              <div>
-                <span className="font-semibold">Missing Keywords</span>
-                <span className="text-[10px] text-muted-foreground ml-1.5">{missingKeywords.length}개 누락</span>
-              </div>
-            </CardTitle>
+              <span className="text-[10px] text-muted-foreground font-medium">{missingKeywords.length}개 누락</span>
+            </div>
           </CardHeader>
           <CardContent className="space-y-3">
             {missingKeywordGroups && missingKeywordGroups.length > 0 ? (
