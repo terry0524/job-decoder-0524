@@ -13,6 +13,7 @@ import { ResumeKeywords } from '@/components/ResumeKeywords';
 import { AnalysisHistory } from '@/components/AnalysisHistory';
 import { AnalysisActions } from '@/components/AnalysisActions';
 import { JdMatchScoreCard } from '@/components/JdMatchScoreCard';
+import { ResumeImprovementSection } from '@/components/ResumeImprovementSection';
 import { analyzeJobPosting, generateResumeGuidance, generateApplicationStrategy, generateResumeKeywords, matchExperiences } from '@/lib/mockAnalysis';
 import { calculateJdMatch, JdMatchResult } from '@/lib/jdMatch';
 import { FullAnalysis, ExperienceMatch } from '@/types/jobAnalysis';
