@@ -1,11 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  CheckCircle2, 
-  Star, 
-  Wrench,
-  Clipboard
-} from 'lucide-react';
+import { CheckCircle2, Star, Wrench, Clipboard } from 'lucide-react';
 
 interface SkillsSectionProps {
   requiredSkills: string[];
@@ -14,36 +9,31 @@ interface SkillsSectionProps {
   responsibilities: string[];
 }
 
-export function SkillsSection({ 
-  requiredSkills, 
-  preferredSkills, 
-  toolsAndTechnologies,
-  responsibilities 
-}: SkillsSectionProps) {
+export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnologies, responsibilities }: SkillsSectionProps) {
   const sections = [
     {
-      title: '필수 역량',
+      title: 'Required Skills',
       items: requiredSkills,
       icon: CheckCircle2,
       color: 'bg-destructive/10 text-destructive',
       badgeColor: 'bg-destructive/10 text-destructive border-destructive/30'
     },
     {
-      title: '우대 역량',
+      title: 'Preferred Skills',
       items: preferredSkills,
       icon: Star,
       color: 'bg-warning/10 text-warning',
       badgeColor: 'bg-warning/10 text-warning border-warning/30'
     },
     {
-      title: '도구 및 기술',
+      title: 'Tools & Technologies',
       items: toolsAndTechnologies,
       icon: Wrench,
       color: 'bg-secondary/10 text-secondary',
       badgeColor: 'bg-secondary/10 text-secondary border-secondary/30'
     },
     {
-      title: '주요 업무',
+      title: 'Key Responsibilities',
       items: responsibilities,
       icon: Clipboard,
       color: 'bg-primary/10 text-primary',
@@ -57,7 +47,7 @@ export function SkillsSection({
         <div className="p-2 rounded-lg bg-primary/10">
           <CheckCircle2 className="w-5 h-5 text-primary" />
         </div>
-        핵심 역량 분석
+        Key Skills & Responsibilities
       </h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -72,7 +62,7 @@ export function SkillsSection({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {title === '도구 및 기술' ? (
+              {title === 'Tools & Technologies' ? (
                 <div className="flex flex-wrap gap-2">
                   {items.map((item, idx) => (
                     <Badge key={idx} variant="outline" className={badgeColor}>

@@ -32,10 +32,10 @@ export function JobInputForm({ onSubmit, isLoading }: JobInputFormProps) {
           <div className="p-2 rounded-lg bg-primary/10">
             <FileText className="w-5 h-5 text-primary" />
           </div>
-          <CardTitle className="text-xl">채용공고 입력</CardTitle>
+          <CardTitle className="text-xl">Paste Job Description</CardTitle>
         </div>
         <CardDescription className="text-sm">
-          분석할 채용공고 정보를 입력하세요. 상세할수록 정확한 분석이 가능합니다.
+          Enter the job posting details below. The more detail you provide, the better the analysis.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -44,11 +44,11 @@ export function JobInputForm({ onSubmit, isLoading }: JobInputFormProps) {
             <div className="space-y-2">
               <Label htmlFor="company" className="flex items-center gap-2 text-sm font-medium">
                 <Building2 className="w-4 h-4 text-muted-foreground" />
-                회사명
+                Company Name
               </Label>
               <Input
                 id="company"
-                placeholder="예: 삼성전자, 네이버, 토스"
+                placeholder="e.g. Google, Netflix, Stripe"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 className="h-11"
@@ -57,11 +57,11 @@ export function JobInputForm({ onSubmit, isLoading }: JobInputFormProps) {
             <div className="space-y-2">
               <Label htmlFor="position" className="flex items-center gap-2 text-sm font-medium">
                 <Briefcase className="w-4 h-4 text-muted-foreground" />
-                직무명
+                Job Title
               </Label>
               <Input
                 id="position"
-                placeholder="예: 서비스 기획, 데이터 분석, 마케팅"
+                placeholder="e.g. Data Analyst, Product Manager"
                 value={positionName}
                 onChange={(e) => setPositionName(e.target.value)}
                 className="h-11"
@@ -72,32 +72,32 @@ export function JobInputForm({ onSubmit, isLoading }: JobInputFormProps) {
           <div className="space-y-2">
             <Label htmlFor="content" className="flex items-center gap-2 text-sm font-medium">
               <FileText className="w-4 h-4 text-muted-foreground" />
-              공고 원문
+              Job Description
             </Label>
             <Textarea
               id="content"
-              placeholder={`채용공고 전문을 붙여넣으세요.
+              placeholder={`Paste the full job description here.
 
-예시:
-[담당업무]
-- 신규 서비스 기획 및 운영
-- 시장/경쟁사 분석을 통한 전략 수립
-- 데이터 기반 서비스 개선
+Example:
+[Responsibilities]
+- Analyze large datasets to generate business insights
+- Develop and maintain machine learning models
+- Collaborate with product and engineering teams
 
-[자격요건]
-- 관련 학과 졸업 또는 동등 경력
-- 문서 작성 및 커뮤니케이션 역량
-- 데이터 분석 도구 활용 가능자
+[Requirements]
+- Bachelor's degree in CS, Statistics, or related field
+- Proficiency in Python and SQL
+- Experience with data visualization tools
 
-[우대사항]
-- 유관 인턴 경험자
-- SQL/Python 활용 경험...`}
+[Preferred]
+- Experience with cloud platforms (AWS/GCP)
+- Familiarity with A/B testing...`}
               value={rawContent}
               onChange={(e) => setRawContent(e.target.value)}
               className="min-h-[280px] resize-none scrollbar-thin"
             />
             <p className="text-xs text-muted-foreground">
-              최소 50자 이상 입력해주세요 ({rawContent.length}자 입력됨)
+              Minimum 50 characters ({rawContent.length} entered)
             </p>
           </div>
 
@@ -107,7 +107,7 @@ export function JobInputForm({ onSubmit, isLoading }: JobInputFormProps) {
             disabled={!isValid || isLoading}
           >
             <Sparkles className="w-5 h-5" />
-            {isLoading ? '분석 중...' : '공고 분석하기'}
+            {isLoading ? 'Analyzing...' : 'Analyze Job Posting'}
           </Button>
         </form>
       </CardContent>
