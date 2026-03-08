@@ -17,6 +17,8 @@ import { ResumeImprovementSection } from '@/components/ResumeImprovementSection'
 import { ReportHeader } from '@/components/ReportHeader';
 import { analyzeJobPosting, generateResumeGuidance, generateApplicationStrategy, generateResumeKeywords, matchExperiences } from '@/lib/mockAnalysis';
 import { calculateJdMatch, JdMatchResult } from '@/lib/jdMatch';
+import { analyzeWithAI } from '@/lib/aiAnalysis';
+import { useToast } from '@/hooks/use-toast';
 import { FullAnalysis, ExperienceMatch } from '@/types/jobAnalysis';
 import { getHistory, saveToHistory, HistoryEntry } from '@/lib/analysisHistory';
 import { sampleJobDescription } from '@/lib/sampleJobDescription';
