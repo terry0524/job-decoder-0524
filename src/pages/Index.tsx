@@ -54,47 +54,64 @@ const Index = () => {
     setCurrentStep(3);
   }, []);
 
+  const { toast } = useToast();
+
   const handleSubmit = useCallback(async (data: { companyName: string; positionName: string; rawContent: string; resumeText?: string }) => {
     setIsLoading(true);
     setCurrentStep(2);
-    
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const analysisResult = analyzeJobPosting(data.rawContent, data.companyName, data.positionName);
-    const resumeGuidance = generateResumeGuidance(analysisResult);
-    const applicationStrategy = generateApplicationStrategy(analysisResult);
-    const keywords = generateResumeKeywords(analysisResult);
 
-    let matchResult: JdMatchResult | null = null;
-    if (data.resumeText && data.resumeText.trim().length > 0) {
-      matchResult = calculateJdMatch(
-        data.resumeText,
-        analysisResult.requiredSkills,
-        analysisResult.preferredSkills,
-        analysisResult.atsKeywords,
-        analysisResult.toolsAndTechnologies
-      );
+    try {
+      // Try real AI analysis
+      const result = await analyzeWithAI(data);
+      applyAnalysis(result.fullAnalysis, result.resumeKeywords, result.jdMatchResult);
+      saveToHistory(result.fullAnalysis, result.resumeKeywords);
+      refreshHistory();
+    } catch (err: any) {
+      console.error('AI analysis failed, falling back to mock:', err);
+      toast({
+        title: 'AI 분석 실패',
+        description: '기본 분석으로 전환합니다. ' + (err?.message || ''),
+        variant: 'destructive',
+      });
+
+      // Fallback to mock analysis
+      const analysisResult = analyzeJobPosting(data.rawContent, data.companyName, data.positionName);
+      const resumeGuidance = generateResumeGuidance(analysisResult);
+      const applicationStrategy = generateApplicationStrategy(analysisResult);
+      const keywords = generateResumeKeywords(analysisResult);
+
+      let matchResult: JdMatchResult | null = null;
+      if (data.resumeText && data.resumeText.trim().length > 0) {
+        matchResult = calculateJdMatch(
+          data.resumeText,
+          analysisResult.requiredSkills,
+          analysisResult.preferredSkills,
+          analysisResult.atsKeywords,
+          analysisResult.toolsAndTechnologies
+        );
+      }
+
+      const fullAnalysis: FullAnalysis = {
+        jobPosting: {
+          id: crypto.randomUUID(),
+          companyName: data.companyName,
+          positionName: data.positionName,
+          rawContent: data.rawContent,
+          createdAt: new Date()
+        },
+        analysis: analysisResult,
+        resumeGuidance,
+        applicationStrategy,
+        experienceMatches: []
+      };
+
+      applyAnalysis(fullAnalysis, keywords, matchResult);
+      saveToHistory(fullAnalysis, keywords);
+      refreshHistory();
+    } finally {
+      setIsLoading(false);
     }
-    
-    const fullAnalysis: FullAnalysis = {
-      jobPosting: {
-        id: crypto.randomUUID(),
-        companyName: data.companyName,
-        positionName: data.positionName,
-        rawContent: data.rawContent,
-        createdAt: new Date()
-      },
-      analysis: analysisResult,
-      resumeGuidance,
-      applicationStrategy,
-      experienceMatches: []
-    };
-    
-    applyAnalysis(fullAnalysis, keywords, matchResult);
-    saveToHistory(fullAnalysis, keywords);
-    refreshHistory();
-    setIsLoading(false);
-  }, [applyAnalysis, refreshHistory]);
+  }, [applyAnalysis, refreshHistory, toast]);
 
   const handleHistorySelect = useCallback((entry: HistoryEntry) => {
     applyAnalysis(entry.analysis, entry.resumeKeywords, null);
