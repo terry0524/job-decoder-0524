@@ -205,7 +205,7 @@ const Index = () => {
             />
           </div>
         ) : (
-          <div className="py-10 space-y-8" ref={reportRef}>
+          <div className="py-8 space-y-0" ref={reportRef}>
             {/* Report Header with quick summary */}
             <ReportHeader
               companyName={analysis.jobPosting.companyName}
@@ -219,23 +219,26 @@ const Index = () => {
               summary={analysis.analysis.jobSummary}
             />
 
-            {/* JD Match Score (if resume was provided) */}
+            {/* JD Match Score — hero section */}
             {jdMatchResult && (
-              <>
-                <div className="flex items-center gap-3">
+              <div className="mt-8 space-y-0">
+                <div className="flex items-center gap-3 mb-6">
                   <Separator className="flex-1" />
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">이력서 매칭</span>
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">Resume Match</span>
                   <Separator className="flex-1" />
                 </div>
                 <JdMatchScoreCard result={jdMatchResult} />
-                <ResumeImprovementSection result={jdMatchResult} />
-              </>
+                {/* Connected workflow: Missing Keywords → Improvement */}
+                <div className="mt-5 rounded-xl border border-border/50 bg-card/50 p-5 space-y-0">
+                  <ResumeImprovementSection result={jdMatchResult} />
+                </div>
+              </div>
             )}
 
-            {/* Section divider */}
-            <div className="flex items-center gap-3">
+            {/* Detailed Analysis */}
+            <div className="flex items-center gap-3 mt-10 mb-6">
               <Separator className="flex-1" />
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">상세 분석</span>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">상세 분석</span>
               <Separator className="flex-1" />
             </div>
 
