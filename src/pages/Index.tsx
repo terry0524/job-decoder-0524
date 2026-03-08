@@ -1,10 +1,15 @@
 import { useState, useCallback } from 'react';
 import { JobInputForm } from '@/components/JobInputForm';
-import { AnalysisResultSection } from '@/components/AnalysisResultSection';
 import { ResumeGuidanceSection } from '@/components/ResumeGuidanceSection';
 import { ExperienceMatchingSection } from '@/components/ExperienceMatchingSection';
 import { DashboardSummary } from '@/components/DashboardSummary';
-import { analyzeJobPosting, generateResumeGuidance, matchExperiences } from '@/lib/mockAnalysis';
+import { WorkflowStepper } from '@/components/WorkflowStepper';
+import { JobSummaryCard } from '@/components/JobSummaryCard';
+import { SkillsSection } from '@/components/SkillsSection';
+import { HiddenRequirementsSection } from '@/components/HiddenRequirementsSection';
+import { DifficultyScore } from '@/components/DifficultyScore';
+import { StrategySection } from '@/components/StrategySection';
+import { analyzeJobPosting, generateResumeGuidance, generateApplicationStrategy, matchExperiences } from '@/lib/mockAnalysis';
 import { FullAnalysis, ExperienceMatch } from '@/types/jobAnalysis';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
@@ -15,15 +20,18 @@ const Index = () => {
   const [experiences, setExperiences] = useState<string[]>([]);
   const [experienceMatches, setExperienceMatches] = useState<ExperienceMatch[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
   const handleSubmit = useCallback(async (data: { companyName: string; positionName: string; rawContent: string }) => {
     setIsLoading(true);
+    setCurrentStep(2);
     
-    // 실제로는 API 호출
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Simulate AI analysis
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     const analysisResult = analyzeJobPosting(data.rawContent, data.companyName, data.positionName);
     const resumeGuidance = generateResumeGuidance(analysisResult);
+    const applicationStrategy = generateApplicationStrategy(analysisResult);
     
     const fullAnalysis: FullAnalysis = {
       jobPosting: {
@@ -35,6 +43,7 @@ const Index = () => {
       },
       analysis: analysisResult,
       resumeGuidance,
+      applicationStrategy,
       experienceMatches: []
     };
     
@@ -42,6 +51,7 @@ const Index = () => {
     setExperiences([]);
     setExperienceMatches([]);
     setIsLoading(false);
+    setCurrentStep(3);
   }, []);
 
   const handleAddExperience = useCallback((exp: string) => {
@@ -68,6 +78,7 @@ const Index = () => {
     setAnalysis(null);
     setExperiences([]);
     setExperienceMatches([]);
+    setCurrentStep(1);
   };
 
   return (
@@ -81,8 +92,8 @@ const Index = () => {
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">채용공고 분석기</h1>
-                <p className="text-xs text-muted-foreground">공고 해석부터 자소서 전략까지</p>
+                <h1 className="text-xl font-bold">Job Decoder</h1>
+                <p className="text-xs text-muted-foreground">공고 분석 · 전략 수립 · 합격 가이드</p>
               </div>
             </div>
             {analysis && (
@@ -96,43 +107,83 @@ const Index = () => {
       </header>
 
       <main className="container max-w-7xl mx-auto px-4 py-8">
+        {/* Workflow Stepper */}
+        <WorkflowStepper currentStep={currentStep} />
+
         {!analysis ? (
-          /* 입력 화면 */
+          /* Step 1: 입력 화면 */
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">채용공고를 분석해보세요</h2>
               <p className="text-muted-foreground">
-                공고를 입력하면 핵심 평가 기준과 자기소개서 방향을 알려드립니다
+                공고를 입력하면 핵심 평가 기준과 지원 전략을 알려드립니다
               </p>
             </div>
             <JobInputForm onSubmit={handleSubmit} isLoading={isLoading} />
           </div>
         ) : (
-          /* 분석 결과 화면 */
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* 왼쪽: 대시보드 요약 */}
-            <div className="lg:col-span-1 space-y-6">
-              <DashboardSummary 
-                analysis={analysis.analysis}
-                matches={experienceMatches}
-                companyName={analysis.jobPosting.companyName}
-                positionName={analysis.jobPosting.positionName}
-              />
-              <ExperienceMatchingSection
-                matches={experienceMatches}
-                onAddExperience={handleAddExperience}
-                onRemoveExperience={handleRemoveExperience}
-              />
+          /* Step 3: 분석 결과 화면 */
+          <div className="space-y-8">
+            {/* Row 1: Summary & Difficulty */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <JobSummaryCard 
+                  companyName={analysis.jobPosting.companyName}
+                  positionName={analysis.jobPosting.positionName}
+                  summary={analysis.analysis.jobSummary}
+                  atsKeywords={analysis.analysis.atsKeywords}
+                />
+              </div>
+              <div>
+                <DifficultyScore difficulty={analysis.analysis.entryLevelDifficulty} />
+              </div>
             </div>
 
-            {/* 오른쪽: 상세 분석 */}
-            <div className="lg:col-span-2 space-y-6">
-              <AnalysisResultSection analysis={analysis.analysis} />
-              
-              <Separator className="my-6" />
-              
-              <ResumeGuidanceSection guidance={analysis.resumeGuidance} />
+            <Separator />
+
+            {/* Row 2: Skills Section */}
+            <SkillsSection 
+              requiredSkills={analysis.analysis.requiredSkills}
+              preferredSkills={analysis.analysis.preferredSkills}
+              toolsAndTechnologies={analysis.analysis.toolsAndTechnologies}
+              responsibilities={analysis.analysis.coreResponsibilities}
+            />
+
+            <Separator />
+
+            {/* Row 3: Hidden Requirements */}
+            <HiddenRequirementsSection 
+              hiddenCriteria={analysis.analysis.hiddenCriteria}
+              requiredExperiences={analysis.analysis.requiredExperiences}
+              recruiterInsights={analysis.analysis.recruiterInsights}
+            />
+
+            <Separator />
+
+            {/* Row 4: Strategy & Experience Matching */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <StrategySection strategy={analysis.applicationStrategy} />
+              </div>
+              <div className="space-y-6">
+                <DashboardSummary 
+                  analysis={analysis.analysis}
+                  matches={experienceMatches}
+                  companyName={analysis.jobPosting.companyName}
+                  positionName={analysis.jobPosting.positionName}
+                />
+                <ExperienceMatchingSection
+                  matches={experienceMatches}
+                  onAddExperience={handleAddExperience}
+                  onRemoveExperience={handleRemoveExperience}
+                />
+              </div>
             </div>
+
+            <Separator />
+
+            {/* Row 5: Resume Guidance */}
+            <ResumeGuidanceSection guidance={analysis.resumeGuidance} />
           </div>
         )}
       </main>
@@ -141,7 +192,7 @@ const Index = () => {
       <footer className="border-t mt-12">
         <div className="container max-w-7xl mx-auto px-4 py-6">
           <p className="text-center text-sm text-muted-foreground">
-            채용공고 분석기 · 취업 준비의 첫 단계를 도와드립니다
+            Job Decoder · AI 기반 채용공고 분석 및 지원 전략 도구
           </p>
         </div>
       </footer>

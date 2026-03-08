@@ -32,7 +32,7 @@ export function DashboardSummary({ analysis, matches, companyName, positionName 
   ];
 
   return (
-    <Card className="border-2 border-secondary/30 bg-gradient-to-br from-secondary/5 to-transparent animate-fade-in">
+    <Card className="border-2 border-secondary/30 bg-gradient-to-br from-secondary/5 to-transparent">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <div className="p-2 rounded-lg bg-secondary/10">
@@ -49,10 +49,10 @@ export function DashboardSummary({ analysis, matches, companyName, positionName 
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-medium">
             <Hash className="w-4 h-4 text-muted-foreground" />
-            핵심 키워드
+            ATS 핵심 키워드
           </div>
           <div className="flex flex-wrap gap-2">
-            {analysis.repeatedKeywords.map((keyword, idx) => (
+            {analysis.atsKeywords.map((keyword, idx) => (
               <Badge 
                 key={idx} 
                 className="bg-gradient-to-r from-primary/80 to-secondary/80 text-white border-0 px-3 py-1"
