@@ -35,24 +35,24 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
   const isValid = companyName && positionName && rawContent.length > 50;
 
   return (
-    <Card className="shadow-lg shadow-primary/5 border-border/60">
+    <Card className="card-elevated border-border/50">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2.5 text-lg">
+          <CardTitle className="flex items-center gap-2.5 text-base">
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <FileText className="w-4 h-4 text-primary" />
             </div>
             채용공고 입력
           </CardTitle>
           {sampleData && (
-            <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" onClick={handleLoadSample}>
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8 border-dashed" onClick={handleLoadSample}>
               <BookOpen className="w-3.5 h-3.5" />
-              예시 불러오기
+              예시 채용공고 불러오기
             </Button>
           )}
         </div>
-        <CardDescription className="text-xs mt-1">
-          아래에 채용공고 정보를 입력하세요. 상세할수록 더 정확한 분석이 가능합니다.
+        <CardDescription className="text-xs mt-1.5">
+          채용공고 정보를 입력하세요. 상세할수록 더 정확한 분석이 가능합니다.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -96,21 +96,17 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
               placeholder="채용공고 내용을 여기에 붙여넣으세요."
               value={rawContent}
               onChange={(e) => setRawContent(e.target.value)}
-              className="min-h-[240px] resize-none scrollbar-thin text-sm"
+              className="min-h-[220px] resize-none scrollbar-thin text-sm"
             />
             <div className="flex items-center justify-between">
-              <p className="text-[11px] text-muted-foreground">
-                최소 50자 이상
-              </p>
-              <p className="text-[11px] text-muted-foreground tabular-nums">
-                {rawContent.length}자
-              </p>
+              <p className="text-[11px] text-muted-foreground">최소 50자 이상</p>
+              <p className="text-[11px] text-muted-foreground tabular-nums">{rawContent.length}자</p>
             </div>
           </div>
 
           <Button 
             type="submit" 
-            className="w-full h-11 text-sm font-semibold gap-2 shadow-md shadow-primary/20"
+            className="w-full h-11 text-sm font-semibold gap-2"
             disabled={!isValid || isLoading}
           >
             {isLoading ? (

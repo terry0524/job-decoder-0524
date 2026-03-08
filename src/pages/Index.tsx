@@ -17,8 +17,9 @@ import { FullAnalysis, ExperienceMatch } from '@/types/jobAnalysis';
 import { getHistory, saveToHistory, HistoryEntry } from '@/lib/analysisHistory';
 import { sampleJobDescription } from '@/lib/sampleJobDescription';
 import { Button } from '@/components/ui/button';
-import { FileText, RotateCcw, Search, Zap, Shield } from 'lucide-react';
+import { FileText, RotateCcw, Search, Zap, Shield, ArrowRight } from 'lucide-react';
 import { ReportHeader } from '@/components/ReportHeader';
+import { Separator } from '@/components/ui/separator';
 
 const Index = () => {
   const [analysis, setAnalysis] = useState<FullAnalysis | null>(null);
@@ -106,13 +107,13 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="container max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md">
-              <FileText className="w-5 h-5 text-primary-foreground" />
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/40">
+        <div className="container max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-sm">
+              <FileText className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="text-lg font-bold tracking-tight">Job Decoder</span>
+            <span className="text-base font-bold tracking-tight">Job Decoder</span>
           </div>
           {analysis && (
             <div className="flex items-center gap-2">
@@ -121,7 +122,8 @@ const Index = () => {
                 resumeKeywords={resumeKeywords} 
                 reportRef={reportRef as React.RefObject<HTMLDivElement>} 
               />
-              <Button variant="ghost" size="sm" onClick={handleReset} className="gap-1.5 text-muted-foreground hover:text-foreground">
+              <Separator orientation="vertical" className="h-5 mx-1" />
+              <Button variant="ghost" size="sm" onClick={handleReset} className="gap-1.5 text-xs text-muted-foreground hover:text-foreground h-8">
                 <RotateCcw className="w-3.5 h-3.5" />
                 새 분석
               </Button>
@@ -132,23 +134,32 @@ const Index = () => {
 
       <main className="container max-w-6xl mx-auto px-4">
         {!analysis ? (
-          <div className="max-w-2xl mx-auto pt-12 pb-16">
+          <div className="max-w-2xl mx-auto pt-16 pb-20">
             {/* Hero */}
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/15 text-primary text-xs font-medium mb-5">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary text-xs font-semibold mb-6">
                 <Zap className="w-3.5 h-3.5" />
                 AI 기반 채용공고 분석
               </div>
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-br from-foreground via-foreground to-muted-foreground bg-clip-text">
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-foreground">
                 Job Decoder
               </h1>
-              <p className="text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-                채용공고를 분석하여 필요한 기술과 지원 전략을 알려주는 도구
+              <p className="text-base sm:text-lg text-muted-foreground max-w-md mx-auto leading-relaxed mb-2">
+                채용공고를 분석하여 필요한 기술과 지원 전략을 알려주는 AI 도구
               </p>
-              <div className="flex items-center justify-center gap-6 mt-6 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1.5"><Search className="w-4 h-4" /> 기술 추출</span>
-                <span className="flex items-center gap-1.5"><Shield className="w-4 h-4" /> ATS 분석</span>
-                <span className="flex items-center gap-1.5"><Zap className="w-4 h-4" /> 전략 생성</span>
+              <p className="text-sm text-muted-foreground/70 max-w-sm mx-auto">
+                채용공고를 붙여넣으면 필수 기술, ATS 키워드, 지원 전략을 자동으로 분석합니다.
+              </p>
+              <div className="flex items-center justify-center gap-5 mt-8 text-xs font-medium text-muted-foreground">
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60">
+                  <Search className="w-3.5 h-3.5 text-primary" /> 기술 추출
+                </span>
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60">
+                  <Shield className="w-3.5 h-3.5 text-secondary" /> ATS 분석
+                </span>
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60">
+                  <Zap className="w-3.5 h-3.5 text-accent" /> 전략 생성
+                </span>
               </div>
             </div>
 
@@ -166,7 +177,7 @@ const Index = () => {
             />
           </div>
         ) : (
-          <div className="py-8 space-y-8" ref={reportRef}>
+          <div className="py-10 space-y-8" ref={reportRef}>
             {/* Report Header with Quick Summary */}
             <ReportHeader
               companyName={analysis.jobPosting.companyName}
@@ -179,6 +190,13 @@ const Index = () => {
               }
               summary={analysis.analysis.jobSummary}
             />
+
+            {/* Section divider */}
+            <div className="flex items-center gap-3">
+              <Separator className="flex-1" />
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">상세 분석</span>
+              <Separator className="flex-1" />
+            </div>
 
             {/* 1. 채용공고 요약 + 난이도 */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -243,14 +261,14 @@ const Index = () => {
         )}
       </main>
 
-      <footer className="border-t border-border/50 mt-16">
+      <footer className="border-t border-border/40 mt-20">
         <div className="container max-w-6xl mx-auto px-4 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-md bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <FileText className="w-3.5 h-3.5 text-primary-foreground" />
+                <FileText className="w-3 h-3 text-primary-foreground" />
               </div>
-              <span className="text-sm font-semibold">Job Decoder</span>
+              <span className="text-sm font-bold">Job Decoder</span>
             </div>
             <p className="text-xs text-muted-foreground">
               AI 기반 채용공고 분석 및 지원 전략 도구
