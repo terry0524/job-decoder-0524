@@ -4,12 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Briefcase, Building2, FileText, Sparkles, BookOpen, Loader2, User } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Briefcase, Building2, FileText, Sparkles, BookOpen, Loader2, User, ChevronDown } from 'lucide-react';
+import { SampleJD } from '@/lib/sampleJobDescription';
 
 interface JobInputFormProps {
   onSubmit: (data: { companyName: string; positionName: string; rawContent: string; resumeText?: string }) => void;
   isLoading?: boolean;
-  sampleData?: { companyName: string; positionName: string; rawContent: string };
+  sampleData?: SampleJD[];
 }
 
 export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormProps) {
@@ -25,12 +27,10 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
     }
   };
 
-  const handleLoadSample = () => {
-    if (sampleData) {
-      setCompanyName(sampleData.companyName);
-      setPositionName(sampleData.positionName);
-      setRawContent(sampleData.rawContent);
-    }
+  const handleLoadSample = (sample: SampleJD) => {
+    setCompanyName(sample.companyName);
+    setPositionName(sample.positionName);
+    setRawContent(sample.rawContent);
   };
 
   const isValid = companyName && positionName && rawContent.length > 50;
@@ -137,16 +137,33 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
                   </>
                 )}
               </Button>
-              {sampleData && (
-                <Button 
-                  type="button"
-                  variant="outline" 
-                  className="gap-1.5 text-xs h-10 border-dashed" 
-                  onClick={handleLoadSample}
-                >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  예시 채용공고 불러오기
-                </Button>
+              {sampleData && sampleData.length > 0 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      className="gap-1.5 text-xs h-10 border-dashed"
+                    >
+                      <BookOpen className="w-3.5 h-3.5" />
+                      예시 불러오기
+                      <ChevronDown className="w-3 h-3 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    {sampleData.map((sample) => (
+                      <DropdownMenuItem
+                        key={sample.id}
+                        onClick={() => handleLoadSample(sample)}
+                        className="text-xs cursor-pointer"
+                      >
+                        <Briefcase className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
+                        {sample.label}
+                        <span className="ml-auto text-[10px] text-muted-foreground">{sample.companyName}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
             </div>
           </form>
