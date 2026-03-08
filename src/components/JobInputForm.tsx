@@ -137,16 +137,33 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
                   </>
                 )}
               </Button>
-              {sampleData && (
-                <Button 
-                  type="button"
-                  variant="outline" 
-                  className="gap-1.5 text-xs h-10 border-dashed" 
-                  onClick={handleLoadSample}
-                >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  예시 채용공고 불러오기
-                </Button>
+              {sampleData && sampleData.length > 0 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      className="gap-1.5 text-xs h-10 border-dashed"
+                    >
+                      <BookOpen className="w-3.5 h-3.5" />
+                      예시 불러오기
+                      <ChevronDown className="w-3 h-3 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    {sampleData.map((sample) => (
+                      <DropdownMenuItem
+                        key={sample.id}
+                        onClick={() => handleLoadSample(sample)}
+                        className="text-xs cursor-pointer"
+                      >
+                        <Briefcase className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
+                        {sample.label}
+                        <span className="ml-auto text-[10px] text-muted-foreground">{sample.companyName}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
             </div>
           </form>
