@@ -6,9 +6,9 @@ interface WorkflowStepperProps {
 }
 
 const steps = [
-  { id: 1, title: 'Paste Job Description', description: 'Enter posting details', icon: FileText },
-  { id: 2, title: 'AI Analysis', description: 'Extract key elements', icon: Sparkles },
-  { id: 3, title: 'Strategy Report', description: 'Review your guide', icon: ClipboardList },
+  { id: 1, title: '채용공고 입력', description: '공고 내용 붙여넣기', icon: FileText },
+  { id: 2, title: 'AI 분석', description: '핵심 요소 추출', icon: Sparkles },
+  { id: 3, title: '분석 결과', description: '전략 리포트 확인', icon: ClipboardList },
 ];
 
 export function WorkflowStepper({ currentStep }: WorkflowStepperProps) {

@@ -8,10 +8,10 @@ interface ResumeGuidanceSectionProps {
 }
 
 const tabs = [
-  { key: 'motivation', label: 'Motivation', icon: Heart, color: 'text-destructive' },
-  { key: 'competency', label: 'Competency', icon: Zap, color: 'text-primary' },
-  { key: 'collaboration', label: 'Collaboration', icon: Users, color: 'text-secondary' },
-  { key: 'aspiration', label: 'Aspiration', icon: Rocket, color: 'text-warning' },
+  { key: 'motivation', label: '지원 동기', icon: Heart, color: 'text-destructive' },
+  { key: 'competency', label: '역량', icon: Zap, color: 'text-primary' },
+  { key: 'collaboration', label: '협업', icon: Users, color: 'text-secondary' },
+  { key: 'aspiration', label: '포부', icon: Rocket, color: 'text-warning' },
 ];
 
 export function ResumeGuidanceSection({ guidance }: ResumeGuidanceSectionProps) {
@@ -22,7 +22,7 @@ export function ResumeGuidanceSection({ guidance }: ResumeGuidanceSectionProps) 
           <div className="p-2 rounded-lg bg-primary/10">
             <PenLine className="w-5 h-5 text-primary" />
           </div>
-          Cover Letter Guide
+          자기소개서 가이드
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -45,7 +45,7 @@ export function ResumeGuidanceSection({ guidance }: ResumeGuidanceSectionProps) 
               <div className="space-y-3">
                 <div className="flex items-center gap-2 pb-2 border-b">
                   <Icon className={`w-5 h-5 ${color}`} />
-                  <h3 className="font-medium">{label} — What to Write</h3>
+                  <h3 className="font-medium">{label} — 작성 포인트</h3>
                 </div>
                 {guidance[key as keyof ResumeGuidance].map((point, idx) => (
                   <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
