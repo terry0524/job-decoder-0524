@@ -36,25 +36,17 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
   const isValid = companyName && positionName && rawContent.length > 50;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Job Description Input */}
       <Card className="card-elevated border-border/50">
-        <CardHeader className="pb-4">
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2.5 text-base">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <FileText className="w-4 h-4 text-primary" />
-              </div>
-              채용공고 입력
-            </CardTitle>
-            {sampleData && (
-              <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8 border-dashed" onClick={handleLoadSample}>
-                <BookOpen className="w-3.5 h-3.5" />
-                예시 채용공고 불러오기
-              </Button>
-            )}
-          </div>
-          <CardDescription className="text-xs mt-1.5">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2.5 text-sm">
+            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+              <FileText className="w-3.5 h-3.5 text-primary" />
+            </div>
+            채용공고 입력
+          </CardTitle>
+          <CardDescription className="text-xs">
             채용공고 정보를 입력하세요. 상세할수록 더 정확한 분석이 가능합니다.
           </CardDescription>
         </CardHeader>
@@ -63,7 +55,7 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label htmlFor="company" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <Building2 className="w-3.5 h-3.5" />
+                  <Building2 className="w-3 h-3" />
                   회사명
                 </Label>
                 <Input
@@ -71,12 +63,12 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
                   placeholder="예: Google, 삼성, 네이버"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="h-10"
+                  className="h-9"
                 />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="position" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <Briefcase className="w-3.5 h-3.5" />
+                  <Briefcase className="w-3 h-3" />
                   직무명
                 </Label>
                 <Input
@@ -84,14 +76,14 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
                   placeholder="예: 데이터 분석가, 프로덕트 매니저"
                   value={positionName}
                   onChange={(e) => setPositionName(e.target.value)}
-                  className="h-10"
+                  className="h-9"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="content" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                <FileText className="w-3.5 h-3.5" />
+                <FileText className="w-3 h-3" />
                 채용공고 내용
               </Label>
               <Textarea
@@ -99,7 +91,7 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
                 placeholder="채용공고 내용을 여기에 붙여넣으세요."
                 value={rawContent}
                 onChange={(e) => setRawContent(e.target.value)}
-                className="min-h-[200px] resize-none scrollbar-thin text-sm"
+                className="min-h-[180px] resize-none scrollbar-thin text-sm"
               />
               <div className="flex items-center justify-between">
                 <p className="text-[11px] text-muted-foreground">최소 50자 이상</p>
@@ -107,42 +99,56 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
               </div>
             </div>
 
-            {/* Resume input - always visible */}
-            <div className="space-y-1.5 pt-2 border-t border-border/50">
+            {/* Resume input */}
+            <div className="space-y-1.5 pt-3 border-t border-border/40">
               <Label htmlFor="resume" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                <User className="w-3.5 h-3.5" />
+                <User className="w-3 h-3" />
                 이력서 또는 경험 입력
-                <span className="text-[10px] text-muted-foreground/60 ml-1">(선택)</span>
+                <span className="text-[10px] text-muted-foreground/50 ml-1">(선택)</span>
               </Label>
               <Textarea
                 id="resume"
-                placeholder="자신의 기술이나 경험을 입력하세요."
+                placeholder="자신의 기술, 프로젝트, 경험 내용을 입력하세요."
                 value={resumeText}
                 onChange={(e) => setResumeText(e.target.value)}
-                className="min-h-[120px] resize-none scrollbar-thin text-sm"
+                className="min-h-[100px] resize-none scrollbar-thin text-sm"
               />
               <p className="text-[10px] text-muted-foreground">
                 입력하면 JD Match Score 및 이력서 개선 제안을 확인할 수 있습니다.
               </p>
             </div>
 
-            <Button 
-              type="submit" 
-              className="w-full h-11 text-sm font-semibold gap-2"
-              disabled={!isValid || isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  분석 중...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4" />
-                  분석 시작
-                </>
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+              <Button 
+                type="submit" 
+                className="flex-1 h-10 text-sm font-semibold gap-2"
+                disabled={!isValid || isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    분석 중...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    분석 시작
+                  </>
+                )}
+              </Button>
+              {sampleData && (
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  className="gap-1.5 text-xs h-10 border-dashed" 
+                  onClick={handleLoadSample}
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  예시 채용공고 불러오기
+                </Button>
               )}
-            </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
