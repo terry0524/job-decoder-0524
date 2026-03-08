@@ -88,7 +88,7 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
               </Label>
               <Textarea
                 id="content"
-                placeholder="채용공고 내용을 여기에 붙여넣으세요."
+                placeholder="채용공고 내용을 붙여넣으세요"
                 value={rawContent}
                 onChange={(e) => setRawContent(e.target.value)}
                 className="min-h-[180px] resize-none scrollbar-thin text-sm"
