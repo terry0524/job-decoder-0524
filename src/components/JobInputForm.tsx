@@ -4,12 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Briefcase, Building2, FileText, Sparkles, BookOpen, Loader2, User } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Briefcase, Building2, FileText, Sparkles, BookOpen, Loader2, User, ChevronDown } from 'lucide-react';
+import { SampleJD } from '@/lib/sampleJobDescription';
 
 interface JobInputFormProps {
   onSubmit: (data: { companyName: string; positionName: string; rawContent: string; resumeText?: string }) => void;
   isLoading?: boolean;
-  sampleData?: { companyName: string; positionName: string; rawContent: string };
+  sampleData?: SampleJD[];
 }
 
 export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormProps) {
