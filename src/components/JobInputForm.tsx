@@ -88,7 +88,7 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
               </Label>
               <Textarea
                 id="content"
-                placeholder="채용공고 내용을 여기에 붙여넣으세요."
+                placeholder="채용공고 내용을 붙여넣으세요"
                 value={rawContent}
                 onChange={(e) => setRawContent(e.target.value)}
                 className="min-h-[180px] resize-none scrollbar-thin text-sm"
@@ -108,7 +108,7 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
               </Label>
               <Textarea
                 id="resume"
-                placeholder="자신의 기술, 프로젝트, 경험 내용을 입력하세요."
+                placeholder="자신의 기술이나 프로젝트 경험을 입력하세요"
                 value={resumeText}
                 onChange={(e) => setResumeText(e.target.value)}
                 className="min-h-[100px] resize-none scrollbar-thin text-sm"
