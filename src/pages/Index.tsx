@@ -21,7 +21,7 @@ import { FullAnalysis, ExperienceMatch } from '@/types/jobAnalysis';
 import { getHistory, saveToHistory, HistoryEntry } from '@/lib/analysisHistory';
 import { sampleJobDescription } from '@/lib/sampleJobDescription';
 import { Button } from '@/components/ui/button';
-import { FileText, RotateCcw, Search, Zap, Shield } from 'lucide-react';
+import { FileText, RotateCcw } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const Index = () => {
@@ -151,30 +151,25 @@ const Index = () => {
 
       <main className="container max-w-5xl mx-auto px-4">
         {!analysis ? (
-          <div className="max-w-2xl mx-auto pt-20 pb-24">
+          <div className="max-w-2xl mx-auto pt-16 sm:pt-20 pb-24">
             {/* Hero */}
-            <div className="text-center mb-14">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary text-xs font-semibold mb-6">
-                <Zap className="w-3.5 h-3.5" />
-                AI 기반 채용공고 분석 도구
-              </div>
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-foreground">
+            <div className="text-center mb-12">
+              <p className="text-xs font-semibold text-primary tracking-widest uppercase mb-4">
+                AI-Powered Job Analysis
+              </p>
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-3">
                 Job Decoder
               </h1>
-              <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
-                채용공고를 분석하여 필요한 기술과 지원 전략을 자동으로 도출합니다.
+              <p className="text-sm font-medium text-muted-foreground mb-2">
+                AI 기반 채용공고 분석 도구
               </p>
-              <div className="flex items-center justify-center gap-4 mt-8 text-xs font-medium text-muted-foreground">
-                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60">
-                  <Search className="w-3.5 h-3.5 text-primary" /> 기술 추출
-                </span>
-                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60">
-                  <Shield className="w-3.5 h-3.5 text-secondary" /> ATS 분석
-                </span>
-                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60">
-                  <Zap className="w-3.5 h-3.5 text-accent" /> 전략 생성
-                </span>
-              </div>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+                채용공고와 이력서 내용을 분석하여
+                필수 기술, ATS 키워드, 매칭도, 지원 전략을 한 번에 확인할 수 있는 도구
+              </p>
+              <p className="text-xs text-muted-foreground/70 mt-3 italic">
+                JD를 읽고, 기술을 정리하고, 지원 전략까지 연결합니다.
+              </p>
             </div>
 
             {/* How It Works */}
@@ -183,7 +178,7 @@ const Index = () => {
             {/* Form */}
             <JobInputForm onSubmit={handleSubmit} isLoading={isLoading} sampleData={sampleJobDescription} />
 
-            {/* History */}
+            {/* Recent Analyses */}
             <AnalysisHistory 
               history={history} 
               onSelect={handleHistorySelect} 
