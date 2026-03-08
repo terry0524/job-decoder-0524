@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { JobInputForm } from '@/components/JobInputForm';
 import { ResumeGuidanceSection } from '@/components/ResumeGuidanceSection';
 import { ExperienceMatchingSection } from '@/components/ExperienceMatchingSection';
@@ -10,11 +10,15 @@ import { HiddenRequirementsSection } from '@/components/HiddenRequirementsSectio
 import { DifficultyScore } from '@/components/DifficultyScore';
 import { StrategySection } from '@/components/StrategySection';
 import { ResumeKeywords } from '@/components/ResumeKeywords';
+import { AnalysisHistory } from '@/components/AnalysisHistory';
+import { AnalysisActions } from '@/components/AnalysisActions';
 import { analyzeJobPosting, generateResumeGuidance, generateApplicationStrategy, generateResumeKeywords, matchExperiences } from '@/lib/mockAnalysis';
 import { FullAnalysis, ExperienceMatch } from '@/types/jobAnalysis';
+import { getHistory, saveToHistory, HistoryEntry } from '@/lib/analysisHistory';
+import { sampleJobDescription } from '@/lib/sampleJobDescription';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { FileText, RotateCcw } from 'lucide-react';
+import { FileText, RotateCcw, BookOpen } from 'lucide-react';
 
 const Index = () => {
   const [analysis, setAnalysis] = useState<FullAnalysis | null>(null);
@@ -23,6 +27,24 @@ const Index = () => {
   const [resumeKeywords, setResumeKeywords] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setHistory(getHistory());
+  }, []);
+
+  const refreshHistory = useCallback(() => {
+    setHistory(getHistory());
+  }, []);
+
+  const applyAnalysis = useCallback((fullAnalysis: FullAnalysis, keywords: string[]) => {
+    setAnalysis(fullAnalysis);
+    setResumeKeywords(keywords);
+    setExperiences([]);
+    setExperienceMatches([]);
+    setCurrentStep(3);
+  }, []);
 
   const handleSubmit = useCallback(async (data: { companyName: string; positionName: string; rawContent: string }) => {
     setIsLoading(true);
@@ -49,13 +71,20 @@ const Index = () => {
       experienceMatches: []
     };
     
-    setAnalysis(fullAnalysis);
-    setResumeKeywords(keywords);
-    setExperiences([]);
-    setExperienceMatches([]);
+    applyAnalysis(fullAnalysis, keywords);
+    saveToHistory(fullAnalysis, keywords);
+    refreshHistory();
     setIsLoading(false);
-    setCurrentStep(3);
+  }, [applyAnalysis, refreshHistory]);
+
+  const handleLoadSample = useCallback(() => {
+    // This is handled by passing to form - we expose sample data
+    return sampleJobDescription;
   }, []);
+
+  const handleHistorySelect = useCallback((entry: HistoryEntry) => {
+    applyAnalysis(entry.analysis, entry.resumeKeywords);
+  }, [applyAnalysis]);
 
   const handleAddExperience = useCallback((exp: string) => {
     if (!analysis || experiences.includes(exp)) return;
@@ -94,10 +123,17 @@ const Index = () => {
               </div>
             </div>
             {analysis && (
-              <Button variant="outline" size="sm" onClick={handleReset} className="gap-2">
-                <RotateCcw className="w-4 h-4" />
-                새 분석
-              </Button>
+              <div className="flex items-center gap-2">
+                <AnalysisActions 
+                  analysis={analysis} 
+                  resumeKeywords={resumeKeywords} 
+                  reportRef={reportRef as React.RefObject<HTMLDivElement>} 
+                />
+                <Button variant="outline" size="sm" onClick={handleReset} className="gap-2">
+                  <RotateCcw className="w-4 h-4" />
+                  새 분석
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -114,10 +150,15 @@ const Index = () => {
                 채용공고를 붙여넣으면 핵심 요구사항, 기술 스택, 지원 전략을 자동으로 분석합니다.
               </p>
             </div>
-            <JobInputForm onSubmit={handleSubmit} isLoading={isLoading} />
+            <JobInputForm onSubmit={handleSubmit} isLoading={isLoading} sampleData={sampleJobDescription} />
+            <AnalysisHistory 
+              history={history} 
+              onSelect={handleHistorySelect} 
+              onHistoryChange={refreshHistory} 
+            />
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-8" ref={reportRef}>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <JobSummaryCard 
