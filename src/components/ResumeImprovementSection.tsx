@@ -20,6 +20,7 @@ export function ResumeImprovementSection({ result }: ResumeImprovementSectionPro
             <Lightbulb className="w-4 h-4 text-accent" />
           </div>
           Resume Improvement Suggestions
+          <span className="text-xs font-normal text-muted-foreground ml-1">이력서 개선 제안</span>
         </CardTitle>
         <p className="text-xs text-muted-foreground mt-1">
           이력서를 개선하기 위한 키워드 및 강조 기술 추천입니다.
