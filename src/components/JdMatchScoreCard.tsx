@@ -26,60 +26,53 @@ export function JdMatchScoreCard({ result }: JdMatchScoreCardProps) {
 
   return (
     <div className="space-y-5">
-      {/* Score Card */}
-      <Card className="border-primary/15 card-highlight">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2.5 text-base">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Target className="w-4 h-4 text-primary" />
+      {/* Score Card — Hero */}
+      <Card className="border-primary/20 card-highlight overflow-hidden">
+        <div className="relative">
+          {/* Subtle gradient accent bar */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary opacity-80" />
+          <CardHeader className="pb-2 pt-6">
+            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-[0.15em]">
+              <Target className="w-3.5 h-3.5 text-primary" />
+              JD Match Score
             </div>
-            <div>
-              <span className="font-bold">JD Match Score</span>
-              <span className="text-xs font-normal text-muted-foreground ml-2">이력서 매칭 점수</span>
+          </CardHeader>
+          <CardContent className="space-y-4 pb-6">
+            <div className="flex items-baseline gap-3">
+              <span className={`text-6xl font-extrabold tabular-nums tracking-tight ${scoreColor}`}>{score}</span>
+              <span className={`text-2xl font-bold ${scoreColor}`}>%</span>
+              <span className="text-sm font-medium text-muted-foreground ml-1">{scoreLabel}</span>
             </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-end gap-3">
-            <span className={`text-5xl font-extrabold tabular-nums ${scoreColor}`}>{score}%</span>
-            <span className="text-sm font-medium text-muted-foreground mb-1.5">{scoreLabel}</span>
-          </div>
-          <Progress value={score} className={`h-2.5 ${progressColor}`} />
-          {/* Score explanation */}
-          <div className="flex items-start gap-2 rounded-lg border border-border/40 bg-muted/30 px-3 py-2.5">
-            <Info className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" />
+            <Progress value={score} className={`h-2 rounded-full ${progressColor}`} />
             <p className="text-xs text-muted-foreground leading-relaxed">
               {scoreExplanation || '이력서와 채용공고 간 필수 기술, 우대 기술, ATS 키워드의 가중치 기반 매칭도입니다. 필수 기술은 3배 가중치가 적용됩니다.'}
             </p>
-          </div>
-        </CardContent>
+          </CardContent>
+        </div>
       </Card>
 
       {/* Two-column: Matching + Missing */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Matching Skills */}
-        <Card className="border-success/20">
-          <CardHeader className="pb-2.5">
-            <CardTitle className="flex items-center gap-2 text-sm">
-              <div className="w-7 h-7 rounded-md bg-success/10 flex items-center justify-center">
-                <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+        <Card className="border-success/15">
+          <CardHeader className="pb-2 pt-4 px-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-success">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                Matching Skills
               </div>
-              <div>
-                <span className="font-semibold">Matching Skills</span>
-                <span className="text-[10px] text-muted-foreground ml-1.5">{matchingSkills.length}개 일치</span>
-              </div>
-            </CardTitle>
+              <span className="text-[10px] text-muted-foreground font-medium">{matchingSkills.length}개 일치</span>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 pb-4">
             {matchingSkills.length > 0 ? (
               <div className="flex flex-wrap gap-1.5">
                 {matchingSkills.map((skill, idx) => (
                   <Badge
                     key={idx}
                     variant="outline"
-                    className="text-xs font-medium bg-success/8 border-success/20 text-success"
+                    className="text-[11px] font-medium bg-success/5 border-success/20 text-success"
                   >
-                    <CheckCircle2 className="w-2.5 h-2.5 mr-1" />
                     {skill}
                   </Badge>
                 ))}
@@ -91,19 +84,17 @@ export function JdMatchScoreCard({ result }: JdMatchScoreCardProps) {
         </Card>
 
         {/* Missing Keywords — grouped by priority */}
-        <Card className="border-destructive/20">
-          <CardHeader className="pb-2.5">
-            <CardTitle className="flex items-center gap-2 text-sm">
-              <div className="w-7 h-7 rounded-md bg-destructive/10 flex items-center justify-center">
-                <AlertTriangle className="w-3.5 h-3.5 text-destructive" />
+        <Card className="border-destructive/15">
+          <CardHeader className="pb-2 pt-4 px-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-destructive">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                Missing Keywords
               </div>
-              <div>
-                <span className="font-semibold">Missing Keywords</span>
-                <span className="text-[10px] text-muted-foreground ml-1.5">{missingKeywords.length}개 누락</span>
-              </div>
-            </CardTitle>
+              <span className="text-[10px] text-muted-foreground font-medium">{missingKeywords.length}개 누락</span>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 px-4 pb-4">
             {missingKeywordGroups && missingKeywordGroups.length > 0 ? (
               missingKeywordGroups.map((group, gIdx) => {
                 const config = priorityConfig[group.priority];

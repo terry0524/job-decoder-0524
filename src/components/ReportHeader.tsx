@@ -12,17 +12,16 @@ interface ReportHeaderProps {
 
 export function ReportHeader({ companyName, positionName, topSkills, difficulty, summary }: ReportHeaderProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Title */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary text-xs font-semibold tracking-wide">
-          <FileSearch className="w-3.5 h-3.5" />
+      <div className="text-center space-y-1.5">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/8 border border-primary/10 text-primary text-[10px] font-bold uppercase tracking-[0.15em]">
+          <FileSearch className="w-3 h-3" />
           JD Analysis Report
         </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-          채용공고 분석 리포트
+        <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+          {companyName} · {positionName}
         </h2>
-        <p className="text-sm text-muted-foreground">{companyName} · {positionName}</p>
       </div>
 
       {/* Quick Summary Bar */}
