@@ -14,6 +14,7 @@ import { AnalysisHistory } from '@/components/AnalysisHistory';
 import { AnalysisActions } from '@/components/AnalysisActions';
 import { JdMatchScoreCard } from '@/components/JdMatchScoreCard';
 import { ResumeImprovementSection } from '@/components/ResumeImprovementSection';
+import { ReportHeader } from '@/components/ReportHeader';
 import { analyzeJobPosting, generateResumeGuidance, generateApplicationStrategy, generateResumeKeywords, matchExperiences } from '@/lib/mockAnalysis';
 import { calculateJdMatch, JdMatchResult } from '@/lib/jdMatch';
 import { FullAnalysis, ExperienceMatch } from '@/types/jobAnalysis';
@@ -21,7 +22,6 @@ import { getHistory, saveToHistory, HistoryEntry } from '@/lib/analysisHistory';
 import { sampleJobDescription } from '@/lib/sampleJobDescription';
 import { Button } from '@/components/ui/button';
 import { FileText, RotateCcw, Search, Zap, Shield } from 'lucide-react';
-import { ReportHeader } from '@/components/ReportHeader';
 import { Separator } from '@/components/ui/separator';
 
 const Index = () => {
@@ -125,7 +125,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className="container max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="container max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-sm">
               <FileText className="w-4 h-4 text-primary-foreground" />
@@ -149,25 +149,22 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container max-w-6xl mx-auto px-4">
+      <main className="container max-w-5xl mx-auto px-4">
         {!analysis ? (
-          <div className="max-w-2xl mx-auto pt-16 pb-20">
+          <div className="max-w-2xl mx-auto pt-20 pb-24">
             {/* Hero */}
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary text-xs font-semibold mb-5">
+            <div className="text-center mb-14">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary text-xs font-semibold mb-6">
                 <Zap className="w-3.5 h-3.5" />
                 AI 기반 채용공고 분석 도구
               </div>
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-3 text-foreground">
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-foreground">
                 Job Decoder
               </h1>
-              <p className="text-sm sm:text-base font-medium text-muted-foreground max-w-md mx-auto mb-1">
-                채용공고를 분석하여 필수 기술, ATS 키워드, 지원 전략을 자동으로 도출합니다.
+              <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
+                채용공고를 분석하여 필요한 기술과 지원 전략을 자동으로 도출합니다.
               </p>
-              <p className="text-xs text-muted-foreground/60 max-w-sm mx-auto">
-                채용공고를 붙여넣으면 몇 초 안에 전문 분석 리포트를 받아보세요.
-              </p>
-              <div className="flex items-center justify-center gap-5 mt-8 text-xs font-medium text-muted-foreground">
+              <div className="flex items-center justify-center gap-4 mt-8 text-xs font-medium text-muted-foreground">
                 <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60">
                   <Search className="w-3.5 h-3.5 text-primary" /> 기술 추출
                 </span>
@@ -180,7 +177,7 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Workflow Steps */}
+            {/* How It Works */}
             <WorkflowStepper currentStep={currentStep} />
 
             {/* Form */}
@@ -195,7 +192,7 @@ const Index = () => {
           </div>
         ) : (
           <div className="py-10 space-y-8" ref={reportRef}>
-            {/* Report Header */}
+            {/* Report Header with quick summary */}
             <ReportHeader
               companyName={analysis.jobPosting.companyName}
               positionName={analysis.jobPosting.positionName}
@@ -208,7 +205,7 @@ const Index = () => {
               summary={analysis.analysis.jobSummary}
             />
 
-            {/* JD Match Score (shown above the analysis if resume was provided) */}
+            {/* JD Match Score (if resume was provided) */}
             {jdMatchResult && (
               <>
                 <div className="flex items-center gap-3">
@@ -228,7 +225,7 @@ const Index = () => {
               <Separator className="flex-1" />
             </div>
 
-            {/* 1. 채용공고 요약 + 난이도 */}
+            {/* 1. 직무 요약 + 난이도 */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div className="lg:col-span-2">
                 <JobSummaryCard 
@@ -292,7 +289,7 @@ const Index = () => {
       </main>
 
       <footer className="border-t border-border/40 mt-20">
-        <div className="container max-w-6xl mx-auto px-4 py-8">
+        <div className="container max-w-5xl mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-md bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
