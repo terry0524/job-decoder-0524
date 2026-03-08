@@ -195,7 +195,7 @@ const Index = () => {
             <WorkflowStepper currentStep={currentStep} />
 
             {/* Form */}
-            <JobInputForm onSubmit={handleSubmit} isLoading={isLoading} sampleData={sampleJobDescription} />
+            <JobInputForm onSubmit={handleSubmit} isLoading={isLoading} sampleData={sampleJobDescriptions} />
 
             {/* Recent Analyses */}
             <AnalysisHistory 
