@@ -20,6 +20,7 @@ export function ResumeImprovementSection({ result }: ResumeImprovementSectionPro
             <Lightbulb className="w-4 h-4 text-accent" />
           </div>
           Resume Improvement Suggestions
+          <span className="text-xs font-normal text-muted-foreground ml-1">이력서 개선 제안</span>
         </CardTitle>
         <p className="text-xs text-muted-foreground mt-1">
           이력서를 개선하기 위한 키워드 및 강조 기술 추천입니다.
@@ -73,6 +74,13 @@ export function ResumeImprovementSection({ result }: ResumeImprovementSectionPro
             </div>
           </div>
         )}
+
+        {/* Guidance text */}
+        <div className="rounded-lg bg-muted/50 border border-border/50 px-4 py-3">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            이 키워드를 이력서의 기술 스택 또는 프로젝트 설명에 반영하면 채용공고와의 매칭도를 높일 수 있습니다.
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
