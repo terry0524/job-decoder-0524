@@ -14,7 +14,7 @@ const steps = [
 export function WorkflowStepper({ currentStep }: WorkflowStepperProps) {
   return (
     <div className="w-full mb-8">
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center gap-0">
         {steps.map((step, index) => {
           const Icon = step.icon;
           const isCompleted = currentStep > step.id;
@@ -22,31 +22,31 @@ export function WorkflowStepper({ currentStep }: WorkflowStepperProps) {
           
           return (
             <div key={step.id} className="flex items-center">
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center gap-2">
                 <div 
                   className={cn(
-                    "w-12 h-12 rounded-full flex items-center justify-center border-2 transition-colors",
-                    isCompleted && "bg-primary border-primary text-primary-foreground",
-                    isCurrent && "bg-primary/10 border-primary text-primary",
-                    !isCompleted && !isCurrent && "bg-muted border-border text-muted-foreground"
+                    "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200",
+                    isCompleted && "bg-primary text-primary-foreground shadow-md shadow-primary/25",
+                    isCurrent && "bg-primary/10 text-primary ring-2 ring-primary/30",
+                    !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
                   )}
                 >
-                  {isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <Icon className="w-5 h-5" />}
+                  {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <Icon className="w-4 h-4" />}
                 </div>
-                <div className="mt-2 text-center">
+                <div className="text-center">
                   <p className={cn(
-                    "text-sm font-medium",
+                    "text-xs font-semibold",
                     (isCompleted || isCurrent) ? "text-foreground" : "text-muted-foreground"
                   )}>
                     {step.title}
                   </p>
-                  <p className="text-xs text-muted-foreground hidden sm:block">{step.description}</p>
+                  <p className="text-[10px] text-muted-foreground hidden sm:block mt-0.5">{step.description}</p>
                 </div>
               </div>
               
               {index < steps.length - 1 && (
                 <div className={cn(
-                  "w-16 sm:w-24 h-0.5 mx-2 sm:mx-4 mt-[-24px]",
+                  "w-12 sm:w-20 h-px mx-3 sm:mx-5 mt-[-20px]",
                   currentStep > step.id ? "bg-primary" : "bg-border"
                 )} />
               )}

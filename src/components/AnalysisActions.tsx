@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { FullAnalysis } from '@/types/jobAnalysis';
 import { Button } from '@/components/ui/button';
-import { Copy, Check, Download } from 'lucide-react';
+import { Copy, Check, Download, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface AnalysisActionsProps {
@@ -80,7 +80,7 @@ export function AnalysisActions({ analysis, resumeKeywords, reportRef }: Analysi
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#f8f9fb',
+        backgroundColor: '#f5f6f8',
       });
 
       const imgData = canvas.toDataURL('image/png');
@@ -107,13 +107,13 @@ export function AnalysisActions({ analysis, resumeKeywords, reportRef }: Analysi
   };
 
   return (
-    <div className="flex gap-2">
-      <Button variant="outline" size="sm" className="gap-2" onClick={handleCopy}>
-        {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+    <div className="flex gap-1.5">
+      <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" onClick={handleCopy}>
+        {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
         {copied ? '복사됨' : '결과 복사'}
       </Button>
-      <Button variant="outline" size="sm" className="gap-2" onClick={handlePdfDownload} disabled={downloading}>
-        <Download className="w-4 h-4" />
+      <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" onClick={handlePdfDownload} disabled={downloading}>
+        {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
         {downloading ? '생성 중...' : 'PDF 다운로드'}
       </Button>
     </div>
