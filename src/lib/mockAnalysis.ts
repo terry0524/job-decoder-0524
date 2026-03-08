@@ -8,8 +8,11 @@ export function analyzeJobPosting(rawContent: string, companyName: string, posit
   const requiredSkills = extractRequiredSkills(rawContent);
   const preferredSkills = extractPreferredSkills(rawContent);
   
+  // Step 1: Identify domain
+  const domain = identifyDomain(rawContent, positionName);
+  
   return {
-    jobSummary: `${companyName}에서 ${positionName} 포지션을 채용하고 있습니다. 이 역할은 데이터 기반 의사결정, 부서 간 협업, 전략적 기획을 통해 측정 가능한 성과를 달성하는 데 초점을 맞추고 있습니다. 강력한 분석 능력과 적응력이 요구됩니다.`,
+    jobSummary: `${companyName}에서 ${positionName} 포지션을 채용합니다. ${domain} 분야에서 데이터 기반 의사결정, 부서 간 협업, 전략적 기획을 통해 측정 가능한 성과를 달성하는 역할입니다.`,
     
     coreResponsibilities: responsibilities,
     requiredSkills,
@@ -48,6 +51,21 @@ export function analyzeJobPosting(rawContent: string, companyName: string, posit
     
     entryLevelDifficulty: difficulty
   };
+}
+
+function identifyDomain(text: string, positionName: string): string {
+  const lower = (text + ' ' + positionName).toLowerCase();
+  const domains: [string, string[]][] = [
+    ['데이터 분석/AI', ['data', 'machine learning', 'ml', 'ai', '데이터', '분석', 'analytics', 'deep learning']],
+    ['소프트웨어 개발', ['software', 'developer', 'frontend', 'backend', 'fullstack', '개발', 'react', 'java', 'node']],
+    ['기계/제조', ['mechanical', 'manufacturing', '기계', '차량', '설비', 'cad', 'solidworks']],
+    ['마케팅/기획', ['marketing', '마케팅', '기획', 'product manager', 'pm', '프로덕트']],
+    ['인사/경영', ['hr', '인사', '경영', 'management', '총무']],
+  ];
+  for (const [domain, triggers] of domains) {
+    if (triggers.some(t => lower.includes(t))) return domain;
+  }
+  return '일반';
 }
 
 export function generateResumeGuidance(analysis: AnalysisResult): ResumeGuidance {
@@ -156,7 +174,7 @@ function extractKeywords(text: string): string[] {
     'Data Analysis': ['data analysis', 'analyze data', 'data-driven', '데이터 분석'],
     'Machine Learning': ['machine learning', 'ml model', 'ml', '머신러닝'],
     'Statistics': ['statistics', 'statistical', '통계'],
-    'Communication': ['communication', 'communicate', '커뮤니케이션'],
+    'Communication': ['communication', 'communicate', '커뮤니케이션', '소통'],
     'Project Management': ['project management', 'manage project', '프로젝트 관리'],
     'Leadership': ['leadership', 'lead', 'leading', '리더십'],
     'Problem Solving': ['problem solving', 'problem-solving', '문제 해결'],
@@ -166,6 +184,21 @@ function extractKeywords(text: string): string[] {
     'Planning': ['planning', 'plan', '기획'],
     'Innovation': ['innovation', 'innovative', '혁신'],
     'Data Pipeline': ['data pipeline', 'pipeline', 'etl'],
+    'Deep Learning': ['deep learning', 'neural network', '딥러닝', 'nlp'],
+    'Cloud': ['aws', 'gcp', 'azure', 'cloud', '클라우드'],
+    'A/B Testing': ['a/b test', 'ab test', 'experimentation'],
+    'Data Visualization': ['visualization', '시각화', 'tableau', 'powerbi'],
+    'Big Data': ['spark', 'hadoop', '빅데이터', 'big data'],
+    'Git': ['git', 'github', 'gitlab'],
+    'Docker': ['docker', 'container', 'kubernetes', 'k8s'],
+    'Java': ['java', 'spring'],
+    'JavaScript': ['javascript', 'typescript', 'react', 'node'],
+    'R': [' r ', 'r programming', 'rstudio'],
+    'Agile': ['agile', 'scrum', 'sprint', '애자일'],
+    'CI/CD': ['ci/cd', 'cicd', 'jenkins', 'github actions'],
+    'API': ['api', 'rest', 'graphql'],
+    'Database': ['database', 'mysql', 'postgresql', 'mongodb', '데이터베이스'],
+    'KPI': ['kpi', '성과 지표', 'metric', 'metrics'],
   };
   
   const lowerText = text.toLowerCase();
@@ -178,7 +211,7 @@ function extractKeywords(text: string): string[] {
     defaults.forEach(d => { if (!found.includes(d)) found.push(d); });
   }
   
-  return found.slice(0, 10);
+  return found.slice(0, 15);
 }
 
 function extractTools(text: string): string[] {
@@ -186,7 +219,10 @@ function extractTools(text: string): string[] {
     'Excel', 'PowerPoint', 'SQL', 'Python', 'R', 'Tableau',
     'Google Analytics', 'Figma', 'Notion', 'Slack', 'Jira',
     'TensorFlow', 'PyTorch', 'AWS', 'GCP', 'Azure', 'Docker',
-    'Git', 'Jupyter', 'Spark'
+    'Git', 'Jupyter', 'Spark', 'Hadoop', 'PowerBI',
+    'React', 'Node.js', 'Java', 'Spring', 'MongoDB',
+    'PostgreSQL', 'MySQL', 'Redis', 'Kubernetes', 'Jenkins',
+    'SolidWorks', 'AutoCAD', 'MATLAB',
   ];
   
   const found = tools.filter(tool => 
@@ -203,9 +239,13 @@ function extractResponsibilities(text: string): string[] {
     '핵심 성과 지표(KPI) 최적화': ['performance', 'metric', 'kpi', 'optimize', '성과', '지표'],
     '부서 간 협업 및 커뮤니케이션': ['collaborate', 'cross-functional', 'team', '협업', '팀'],
     '이해관계자를 위한 보고서 및 프레젠테이션 작성': ['report', 'presentation', 'stakeholder', '보고서'],
-    'Data Pipeline 설계 및 구현': ['pipeline', 'etl', 'data pipeline', '파이프라인'],
+    'Data Pipeline 설계 및 구현': ['pipeline', 'etl', 'data pipeline', '파이프라인', '자동화'],
     '시장 조사 및 경쟁 분석': ['market', 'research', 'competitive', '시장', '조사'],
     '프로젝트 일정 및 산출물 관리': ['project', 'timeline', 'deliverable', '프로젝트', '일정'],
+    'A/B Testing 설계 및 분석': ['a/b test', 'ab test', 'experimentation', '실험'],
+    '서비스 성능 개선 및 품질 관리': ['성능', 'quality', '개선', 'improvement', 'optimization'],
+    '대시보드 설계 및 데이터 시각화': ['dashboard', '대시보드', 'visualization', '시각화'],
+    '기술 문서 작성 및 지식 공유': ['documentation', '문서', 'knowledge', '지식'],
   };
   
   const lowerText = text.toLowerCase();
@@ -222,7 +262,7 @@ function extractResponsibilities(text: string): string[] {
     ];
   }
   
-  return found.slice(0, 6);
+  return found.slice(0, 8);
 }
 
 function extractRequiredSkills(text: string): string[] {
@@ -235,6 +275,10 @@ function extractRequiredSkills(text: string): string[] {
     '커뮤니케이션 능력': ['communication', '커뮤니케이션', '소통'],
     '문제 해결 능력': ['problem solving', 'problem-solving', '문제 해결'],
     '프로젝트 관리': ['project management', '프로젝트 관리'],
+    'Java 프로그래밍': ['java', 'spring'],
+    'JavaScript/TypeScript': ['javascript', 'typescript', 'react'],
+    '논리적 사고력': ['논리', 'logical', '사고력'],
+    'CAD/설계 도구': ['cad', 'solidworks', 'autocad', '설계'],
   };
   
   const lowerText = text.toLowerCase();
@@ -251,18 +295,22 @@ function extractRequiredSkills(text: string): string[] {
     ];
   }
   
-  return found.slice(0, 6);
+  return found.slice(0, 8);
 }
 
 function extractPreferredSkills(text: string): string[] {
   const prefPatterns: Record<string, string[]> = {
-    'Deep Learning 경험': ['deep learning', 'neural network', '딥러닝'],
+    'Deep Learning 경험': ['deep learning', 'neural network', '딥러닝', 'nlp'],
     'A/B Testing 방법론': ['a/b test', 'ab test', 'experimentation'],
     'Cloud 플랫폼 경험 (AWS/GCP/Azure)': ['aws', 'gcp', 'azure', 'cloud', '클라우드'],
     '인턴십 경험': ['intern', 'internship', '인턴'],
     '글로벌 시장 리서치 경험': ['international', 'global', 'overseas', '해외', '글로벌'],
     '스타트업 또는 빠른 환경 경험': ['startup', 'fast-paced', '스타트업'],
     '고급 SQL 또는 Python 스크립팅': ['advanced sql', 'scripting'],
+    '빅데이터 처리 경험 (Spark/Hadoop)': ['spark', 'hadoop', '빅데이터', 'big data'],
+    'Git 버전 관리': ['git', 'github', 'gitlab'],
+    'Docker/Kubernetes': ['docker', 'kubernetes', 'container'],
+    'Agile/Scrum 경험': ['agile', 'scrum', '애자일'],
   };
   
   const lowerText = text.toLowerCase();
@@ -279,7 +327,7 @@ function extractPreferredSkills(text: string): string[] {
     ];
   }
   
-  return found.slice(0, 5);
+  return found.slice(0, 6);
 }
 
 function assessDifficulty(text: string): DifficultyAssessment {
@@ -288,16 +336,27 @@ function assessDifficulty(text: string): DifficultyAssessment {
   let score = 50;
   const factors: string[] = [];
   
-  if (lowerText.includes('years of experience') || lowerText.includes('경력') || lowerText.includes('senior')) {
+  // Experience requirements
+  const yearMatch = text.match(/(\d+)\s*년\s*(이상|경력)/);
+  if (yearMatch) {
+    const years = parseInt(yearMatch[1]);
+    score += years * 8;
+    factors.push(`${years}년 이상 경력 요구`);
+  } else if (lowerText.includes('years of experience') || lowerText.includes('경력') || lowerText.includes('senior')) {
     score += 20;
     factors.push('경력 요구사항이 명시되어 있음');
   }
   
-  const techTerms = ['sql', 'python', 'java', 'api', 'database', 'machine learning', 'tensorflow', 'docker'];
+  // Tech stack complexity
+  const techTerms = ['sql', 'python', 'java', 'api', 'database', 'machine learning', 'tensorflow', 'docker',
+    'kubernetes', 'spark', 'hadoop', 'deep learning', 'aws', 'gcp', 'azure'];
   const techCount = techTerms.filter(t => lowerText.includes(t)).length;
-  if (techCount >= 2) {
-    score += 15;
-    factors.push('다수의 기술 스택 요구');
+  if (techCount >= 4) {
+    score += 20;
+    factors.push(`${techCount}개의 기술 스택 요구 (높은 복잡도)`);
+  } else if (techCount >= 2) {
+    score += 10;
+    factors.push(`${techCount}개의 기술 스택 요구`);
   }
   
   if (lowerText.includes('leadership') || lowerText.includes('manage') || lowerText.includes('lead a team') || lowerText.includes('리더십')) {

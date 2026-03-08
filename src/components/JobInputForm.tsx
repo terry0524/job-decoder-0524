@@ -4,14 +4,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Briefcase, Building2, FileText, Sparkles } from 'lucide-react';
+import { Briefcase, Building2, FileText, Sparkles, BookOpen } from 'lucide-react';
 
 interface JobInputFormProps {
   onSubmit: (data: { companyName: string; positionName: string; rawContent: string }) => void;
   isLoading?: boolean;
+  sampleData?: { companyName: string; positionName: string; rawContent: string };
 }
 
-export function JobInputForm({ onSubmit, isLoading }: JobInputFormProps) {
+export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormProps) {
   const [companyName, setCompanyName] = useState('');
   const [positionName, setPositionName] = useState('');
   const [rawContent, setRawContent] = useState('');
@@ -23,16 +24,32 @@ export function JobInputForm({ onSubmit, isLoading }: JobInputFormProps) {
     }
   };
 
+  const handleLoadSample = () => {
+    if (sampleData) {
+      setCompanyName(sampleData.companyName);
+      setPositionName(sampleData.positionName);
+      setRawContent(sampleData.rawContent);
+    }
+  };
+
   const isValid = companyName && positionName && rawContent.length > 50;
 
   return (
     <Card className="border-2 border-primary/10 shadow-lg">
       <CardHeader className="space-y-2 pb-4">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <FileText className="w-5 h-5 text-primary" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <FileText className="w-5 h-5 text-primary" />
+            </div>
+            <CardTitle className="text-xl">채용공고 입력</CardTitle>
           </div>
-          <CardTitle className="text-xl">채용공고 입력</CardTitle>
+          {sampleData && (
+            <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground" onClick={handleLoadSample}>
+              <BookOpen className="w-4 h-4" />
+              예시 채용공고 불러오기
+            </Button>
+          )}
         </div>
         <CardDescription className="text-sm">
           아래에 채용공고 정보를 입력하세요. 상세할수록 더 정확한 분석이 가능합니다.
