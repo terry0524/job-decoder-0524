@@ -74,6 +74,13 @@ export function ResumeImprovementSection({ result }: ResumeImprovementSectionPro
             </div>
           </div>
         )}
+
+        {/* Guidance text */}
+        <div className="rounded-lg bg-muted/50 border border-border/50 px-4 py-3">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            이 키워드를 이력서의 기술 스택 또는 프로젝트 설명에 반영하면 채용공고와의 매칭도를 높일 수 있습니다.
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
