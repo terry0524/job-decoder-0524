@@ -111,10 +111,10 @@ export function AnalysisResultSection({ analysis }: AnalysisResultSectionProps) 
       </div>
 
       {/* 채용 담당자 관점 */}
-      <Card className="border-2 border-purple-500/20 bg-purple-500/5 animate-fade-in">
+      <Card className="border-2 border-accent/30 bg-accent/5 animate-fade-in">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
-            <div className="p-1.5 rounded-md bg-purple-500/10 text-purple-600">
+            <div className="p-1.5 rounded-md bg-accent/10 text-accent">
               <Lightbulb className="w-4 h-4" />
             </div>
             채용 담당자 관점에서 본 핵심 포인트
@@ -125,7 +125,7 @@ export function AnalysisResultSection({ analysis }: AnalysisResultSectionProps) 
             {analysis.recruiterInsights.map((insight, idx) => (
               <div key={idx} className="p-3 rounded-lg bg-card border">
                 <div className="flex items-center gap-2 mb-1">
-                  <Badge variant="outline" className="text-xs bg-purple-500/10 text-purple-600 border-purple-500/30">
+                  <Badge variant="outline" className="text-xs bg-accent/10 text-accent border-accent/30">
                     {insight.category}
                   </Badge>
                 </div>
