@@ -6,7 +6,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT = `You are a technical recruiter and ATS optimization expert. You analyze job descriptions with structured precision.
+const SYSTEM_PROMPT = `You are a professional ATS (Applicant Tracking System) optimization expert and technical recruiter. You analyze job descriptions with structured precision to help candidates optimize their resumes.
 
 When given a job description (and optionally a resume), return a JSON object with EXACTLY this schema. Do NOT include markdown formatting or code fences — return raw JSON only.
 
@@ -46,9 +46,20 @@ When given a job description (and optionally a resume), return a JSON object wit
 If a resume is provided, also include this top-level key:
 {
   "jdMatch": {
-    "score": "number 0-100 — realistic match percentage",
+    "score": "number 0-100 — realistic match percentage based on weighted analysis",
+    "scoreExplanation": "string — 1-2 sentence explanation of the score in Korean, explaining what contributes most",
     "matchingSkills": ["string array — skills found in both resume and JD"],
-    "missingKeywords": ["string array — important JD keywords missing from resume"]
+    "missingKeywords": ["string array — all important JD keywords missing from resume"],
+    "missingKeywordGroups": [
+      {"priority": "high", "keywords": ["required skills missing from resume"]},
+      {"priority": "medium", "keywords": ["preferred skills missing from resume"]},
+      {"priority": "low", "keywords": ["nice-to-have keywords missing from resume"]}
+    ],
+    "resumePlacementTips": [
+      {"section": "Skills Section", "description": "guidance in Korean on adding to skills", "keywords": ["relevant missing keywords"]},
+      {"section": "Project Descriptions", "description": "guidance in Korean on weaving into projects", "keywords": ["relevant missing keywords"]},
+      {"section": "Experience Section", "description": "guidance in Korean on mentioning in work experience", "keywords": ["relevant missing keywords"]}
+    ]
   }
 }
 
@@ -59,7 +70,10 @@ Analysis rules:
 4. If resume is provided, match score must be calculated by actually comparing resume content against extracted requirements. Weight required skills 3x more than preferred skills.
 5. Keep technical keywords (Python, SQL, React, etc.) in English. Explanations and insights in Korean.
 6. Return 3-8 items per array field. Be concise but thorough.
-7. CRITICAL: Return ONLY valid JSON. No markdown, no code fences, no explanation text.`;
+7. missingKeywordGroups: "high" = required skills missing, "medium" = preferred skills missing, "low" = ATS/tools keywords missing. Only include groups that have keywords.
+8. resumePlacementTips: For each resume section, list the specific missing keywords that should be added there, with actionable Korean guidance.
+9. scoreExplanation must reference specific skills or keyword categories that influenced the score.
+10. CRITICAL: Return ONLY valid JSON. No markdown, no code fences, no explanation text.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -115,7 +129,7 @@ serve(async (req) => {
       }
       if (status === 402) {
         return new Response(
-          JSON.stringify({ error: "payment_required", message: "AI 크레딧이 부족합니다. Lovable 설정에서 크레딧을 추가해 주세요." }),
+          JSON.stringify({ error: "payment_required", message: "AI 크레딧이 부족합니다." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
@@ -137,7 +151,6 @@ serve(async (req) => {
       );
     }
 
-    // Strip markdown code fences if present
     content = content.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "").trim();
 
     let parsed;
