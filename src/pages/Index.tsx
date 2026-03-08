@@ -21,7 +21,7 @@ import { analyzeWithAI } from '@/lib/aiAnalysis';
 import { useToast } from '@/hooks/use-toast';
 import { FullAnalysis, ExperienceMatch } from '@/types/jobAnalysis';
 import { getHistory, saveToHistory, HistoryEntry } from '@/lib/analysisHistory';
-import { sampleJobDescription } from '@/lib/sampleJobDescription';
+import { sampleJobDescriptions } from '@/lib/sampleJobDescription';
 import { Button } from '@/components/ui/button';
 import { FileText, RotateCcw } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
