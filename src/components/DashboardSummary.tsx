@@ -33,7 +33,7 @@ export function DashboardSummary({ analysis, matches, companyName, positionName 
           <div className="p-2 rounded-lg bg-secondary/10">
             <LayoutDashboard className="w-5 h-5 text-secondary" />
           </div>
-          Analysis Dashboard
+          분석 대시보드
         </CardTitle>
         <p className="text-sm text-muted-foreground">{companyName} · {positionName}</p>
       </CardHeader>
@@ -41,7 +41,7 @@ export function DashboardSummary({ analysis, matches, companyName, positionName 
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-medium">
             <Hash className="w-4 h-4 text-muted-foreground" />
-            Top ATS Keywords
+            주요 ATS 키워드
           </div>
           <div className="flex flex-wrap gap-2">
             {analysis.atsKeywords.map((keyword, idx) => (
@@ -56,7 +56,7 @@ export function DashboardSummary({ analysis, matches, companyName, positionName 
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2 font-medium">
               <TrendingUp className="w-4 h-4 text-muted-foreground" />
-              Experience Match
+              경험 매칭도
             </div>
             <span className={`font-bold ${matchScore >= 70 ? 'text-success' : matchScore >= 40 ? 'text-warning' : 'text-muted-foreground'}`}>
               {matches.length > 0 ? `${matchScore}%` : '—'}
@@ -64,14 +64,14 @@ export function DashboardSummary({ analysis, matches, companyName, positionName 
           </div>
           <Progress value={matchScore} className="h-3" />
           {matches.length === 0 && (
-            <p className="text-xs text-muted-foreground">Add your experiences below to see your match score</p>
+            <p className="text-xs text-muted-foreground">아래에서 경험을 추가하면 매칭 점수를 확인할 수 있습니다</p>
           )}
         </div>
 
         <div className="space-y-3">
           <div className="flex items-center gap-2 text-sm font-medium">
             <ListChecks className="w-4 h-4 text-muted-foreground" />
-            Priority Preparation
+            우선 준비 사항
           </div>
           <div className="space-y-2">
             {priorityItems.map((item, idx) => (

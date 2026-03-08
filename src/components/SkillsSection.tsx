@@ -12,28 +12,28 @@ interface SkillsSectionProps {
 export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnologies, responsibilities }: SkillsSectionProps) {
   const sections = [
     {
-      title: 'Required Skills',
+      title: '필수 기술',
       items: requiredSkills,
       icon: CheckCircle2,
       color: 'bg-destructive/10 text-destructive',
       badgeColor: 'bg-destructive/10 text-destructive border-destructive/30'
     },
     {
-      title: 'Preferred Skills',
+      title: '우대 기술',
       items: preferredSkills,
       icon: Star,
       color: 'bg-warning/10 text-warning',
       badgeColor: 'bg-warning/10 text-warning border-warning/30'
     },
     {
-      title: 'Tools & Technologies',
+      title: '도구 및 기술',
       items: toolsAndTechnologies,
       icon: Wrench,
       color: 'bg-secondary/10 text-secondary',
       badgeColor: 'bg-secondary/10 text-secondary border-secondary/30'
     },
     {
-      title: 'Key Responsibilities',
+      title: '주요 업무',
       items: responsibilities,
       icon: Clipboard,
       color: 'bg-primary/10 text-primary',
@@ -47,7 +47,7 @@ export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnol
         <div className="p-2 rounded-lg bg-primary/10">
           <CheckCircle2 className="w-5 h-5 text-primary" />
         </div>
-        Key Skills & Responsibilities
+        핵심 기술 및 업무
       </h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -62,7 +62,7 @@ export function SkillsSection({ requiredSkills, preferredSkills, toolsAndTechnol
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {title === 'Tools & Technologies' ? (
+              {title === '도구 및 기술' ? (
                 <div className="flex flex-wrap gap-2">
                   {items.map((item, idx) => (
                     <Badge key={idx} variant="outline" className={badgeColor}>

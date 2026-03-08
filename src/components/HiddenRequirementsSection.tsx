@@ -16,7 +16,7 @@ export function HiddenRequirementsSection({ hiddenCriteria, requiredExperiences,
         <div className="p-2 rounded-lg bg-accent/10">
           <Eye className="w-5 h-5 text-accent" />
         </div>
-        Hidden Requirements
+        숨겨진 요구사항
       </h2>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -26,7 +26,7 @@ export function HiddenRequirementsSection({ hiddenCriteria, requiredExperiences,
               <div className="p-1.5 rounded-md bg-accent/10">
                 <Eye className="w-4 h-4 text-accent" />
               </div>
-              Implicit Evaluation Criteria
+              암묵적 평가 기준
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -47,7 +47,7 @@ export function HiddenRequirementsSection({ hiddenCriteria, requiredExperiences,
               <div className="p-1.5 rounded-md bg-success/10">
                 <Briefcase className="w-4 h-4 text-success" />
               </div>
-              Must-Have Experiences
+              필수 경험
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -69,7 +69,7 @@ export function HiddenRequirementsSection({ hiddenCriteria, requiredExperiences,
             <div className="p-1.5 rounded-md bg-accent/10">
               <Lightbulb className="w-4 h-4 text-accent" />
             </div>
-            Recruiter Perspective
+            채용 담당자 관점
           </CardTitle>
         </CardHeader>
         <CardContent>

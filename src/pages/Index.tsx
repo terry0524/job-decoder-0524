@@ -90,13 +90,13 @@ const Index = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold">Job Decoder</h1>
-                <p className="text-xs text-muted-foreground">Analyze · Strategize · Apply</p>
+                <p className="text-xs text-muted-foreground">분석 · 전략 · 지원</p>
               </div>
             </div>
             {analysis && (
               <Button variant="outline" size="sm" onClick={handleReset} className="gap-2">
                 <RotateCcw className="w-4 h-4" />
-                New Analysis
+                새 분석
               </Button>
             )}
           </div>
@@ -109,16 +109,15 @@ const Index = () => {
         {!analysis ? (
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2">Decode Any Job Posting</h2>
+              <h2 className="text-2xl font-bold mb-2">채용공고를 분석해 보세요</h2>
               <p className="text-muted-foreground">
-                Paste a job description to extract key requirements, skills, and build your application strategy.
+                채용공고를 붙여넣으면 핵심 요구사항, 기술 스택, 지원 전략을 자동으로 분석합니다.
               </p>
             </div>
             <JobInputForm onSubmit={handleSubmit} isLoading={isLoading} />
           </div>
         ) : (
           <div className="space-y-8">
-            {/* Row 1: Summary & Difficulty */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <JobSummaryCard 
@@ -135,7 +134,6 @@ const Index = () => {
 
             <Separator />
 
-            {/* Row 2: Skills */}
             <SkillsSection 
               requiredSkills={analysis.analysis.requiredSkills}
               preferredSkills={analysis.analysis.preferredSkills}
@@ -145,7 +143,6 @@ const Index = () => {
 
             <Separator />
 
-            {/* Row 3: Hidden Requirements */}
             <HiddenRequirementsSection 
               hiddenCriteria={analysis.analysis.hiddenCriteria}
               requiredExperiences={analysis.analysis.requiredExperiences}
@@ -154,7 +151,6 @@ const Index = () => {
 
             <Separator />
 
-            {/* Row 4: Strategy & Dashboard */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <StrategySection strategy={analysis.applicationStrategy} />
@@ -176,7 +172,6 @@ const Index = () => {
 
             <Separator />
 
-            {/* Row 5: Resume Keywords & Cover Letter Guide */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <ResumeGuidanceSection guidance={analysis.resumeGuidance} />
@@ -192,7 +187,7 @@ const Index = () => {
       <footer className="border-t mt-12">
         <div className="container max-w-7xl mx-auto px-4 py-6">
           <p className="text-center text-sm text-muted-foreground">
-            Job Decoder — AI-powered job analysis and application strategy tool
+            Job Decoder — AI 기반 채용공고 분석 및 지원 전략 도구
           </p>
         </div>
       </footer>

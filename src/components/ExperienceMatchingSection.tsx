@@ -14,9 +14,9 @@ interface ExperienceMatchingSectionProps {
 }
 
 const matchConfig = {
-  strong: { label: 'Strong Match', color: 'bg-success/10 text-success border-success/30', icon: CheckCircle2, score: 100 },
-  moderate: { label: 'Needs Context', color: 'bg-warning/10 text-warning border-warning/30', icon: AlertTriangle, score: 60 },
-  weak: { label: 'Weak Match', color: 'bg-destructive/10 text-destructive border-destructive/30', icon: XCircle, score: 25 },
+  strong: { label: '높은 일치', color: 'bg-success/10 text-success border-success/30', icon: CheckCircle2, score: 100 },
+  moderate: { label: '보완 필요', color: 'bg-warning/10 text-warning border-warning/30', icon: AlertTriangle, score: 60 },
+  weak: { label: '낮은 일치', color: 'bg-destructive/10 text-destructive border-destructive/30', icon: XCircle, score: 25 },
 };
 
 export function ExperienceMatchingSection({ matches, onAddExperience, onRemoveExperience }: ExperienceMatchingSectionProps) {
@@ -44,14 +44,14 @@ export function ExperienceMatchingSection({ matches, onAddExperience, onRemoveEx
           <div className="p-2 rounded-lg bg-secondary/10">
             <Link2 className="w-5 h-5 text-secondary" />
           </div>
-          Experience Matching
+          경험 매칭
         </CardTitle>
-        <CardDescription>Enter your experiences to see how they match the job requirements</CardDescription>
+        <CardDescription>보유한 경험을 입력하면 채용 요건과의 일치도를 확인할 수 있습니다</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex gap-2">
           <Input
-            placeholder="e.g. Python project, data analysis internship"
+            placeholder="예: Python 프로젝트, 데이터 분석 인턴"
             value={newExperience}
             onChange={(e) => setNewExperience(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -63,7 +63,7 @@ export function ExperienceMatchingSection({ matches, onAddExperience, onRemoveEx
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {['Python project', 'Data analysis', 'Machine learning', 'Internship', 'SQL queries', 'Team project'].map((exp) => (
+          {['Python 프로젝트', 'Data analysis', 'Machine learning', '인턴 경험', 'SQL 활용', '팀 프로젝트'].map((exp) => (
             <Badge key={exp} variant="outline" className="cursor-pointer hover:bg-muted transition-colors" onClick={() => onAddExperience(exp)}>
               + {exp}
             </Badge>
@@ -73,7 +73,7 @@ export function ExperienceMatchingSection({ matches, onAddExperience, onRemoveEx
         {matches.length > 0 && (
           <div className="p-4 rounded-lg bg-muted/30 border">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Overall Match</span>
+              <span className="text-sm font-medium">전체 매칭도</span>
               <span className="text-lg font-bold text-primary">{overallScore}%</span>
             </div>
             <Progress value={overallScore} className="h-2" />
@@ -108,7 +108,7 @@ export function ExperienceMatchingSection({ matches, onAddExperience, onRemoveEx
         {matches.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
             <Link2 className="w-12 h-12 mx-auto mb-3 opacity-30" />
-            <p className="text-sm">Add your experiences to see how they match this job</p>
+            <p className="text-sm">경험을 추가하면 채용 요건과의 매칭 결과를 확인할 수 있습니다</p>
           </div>
         )}
       </CardContent>
