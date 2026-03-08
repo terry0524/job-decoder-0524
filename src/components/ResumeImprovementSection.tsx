@@ -72,8 +72,27 @@ export function ResumeImprovementSection({ result }: ResumeImprovementSectionPro
           </div>
         )}
 
+        {/* Where to add */}
+        {missingKeywords.length > 0 && (
+          <div className="space-y-2 pt-2 border-t border-border/30">
+            <p className="text-xs font-bold text-foreground">Where to add these keywords</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {[
+                { label: 'Skills section', desc: '기술 스택 목록에 추가' },
+                { label: 'Project description', desc: '프로젝트 설명에 자연스럽게 포함' },
+                { label: 'Professional summary', desc: '요약 문단에서 핵심 역량으로 언급' },
+              ].map((item, idx) => (
+                <div key={idx} className="rounded-lg border border-border/40 bg-muted/30 px-3 py-2">
+                  <p className="text-[11px] font-semibold text-foreground">{item.label}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Guidance */}
-        <p className="text-[11px] text-muted-foreground leading-relaxed pt-1 border-t border-border/30">
+        <p className="text-[11px] text-muted-foreground leading-relaxed pt-2 border-t border-border/30">
           이 키워드를 이력서 기술 스택이나 프로젝트 설명에 반영하면 매칭도를 높이는 데 도움이 됩니다.
         </p>
       </CardContent>

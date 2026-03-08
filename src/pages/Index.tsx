@@ -164,8 +164,8 @@ const Index = () => {
                 AI 기반 채용공고 분석 도구
               </p>
               <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-                채용공고와 이력서 내용을 분석하여
-                필수 기술, ATS 키워드, 매칭도, 지원 전략을 한 번에 확인할 수 있는 도구
+                채용공고와 이력서를 분석하여
+                필수 기술, ATS 키워드, 매칭도, 지원 전략을 확인할 수 있습니다.
               </p>
               <p className="text-xs text-muted-foreground/70 mt-3 italic">
                 JD를 읽고, 기술을 정리하고, 지원 전략까지 연결합니다.
