@@ -6,24 +6,9 @@ interface WorkflowStepperProps {
 }
 
 const steps = [
-  { 
-    id: 1, 
-    title: '공고 입력', 
-    description: '채용공고 붙여넣기',
-    icon: FileText 
-  },
-  { 
-    id: 2, 
-    title: 'AI 분석', 
-    description: '핵심 요소 추출',
-    icon: Sparkles 
-  },
-  { 
-    id: 3, 
-    title: '전략 리포트', 
-    description: '맞춤 가이드 확인',
-    icon: ClipboardList 
-  },
+  { id: 1, title: 'Paste Job Description', description: 'Enter posting details', icon: FileText },
+  { id: 2, title: 'AI Analysis', description: 'Extract key elements', icon: Sparkles },
+  { id: 3, title: 'Strategy Report', description: 'Review your guide', icon: ClipboardList },
 ];
 
 export function WorkflowStepper({ currentStep }: WorkflowStepperProps) {
@@ -46,11 +31,7 @@ export function WorkflowStepper({ currentStep }: WorkflowStepperProps) {
                     !isCompleted && !isCurrent && "bg-muted border-border text-muted-foreground"
                   )}
                 >
-                  {isCompleted ? (
-                    <CheckCircle2 className="w-6 h-6" />
-                  ) : (
-                    <Icon className="w-5 h-5" />
-                  )}
+                  {isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <Icon className="w-5 h-5" />}
                 </div>
                 <div className="mt-2 text-center">
                   <p className={cn(
@@ -59,19 +40,15 @@ export function WorkflowStepper({ currentStep }: WorkflowStepperProps) {
                   )}>
                     {step.title}
                   </p>
-                  <p className="text-xs text-muted-foreground hidden sm:block">
-                    {step.description}
-                  </p>
+                  <p className="text-xs text-muted-foreground hidden sm:block">{step.description}</p>
                 </div>
               </div>
               
               {index < steps.length - 1 && (
-                <div 
-                  className={cn(
-                    "w-16 sm:w-24 h-0.5 mx-2 sm:mx-4 mt-[-24px]",
-                    currentStep > step.id ? "bg-primary" : "bg-border"
-                  )}
-                />
+                <div className={cn(
+                  "w-16 sm:w-24 h-0.5 mx-2 sm:mx-4 mt-[-24px]",
+                  currentStep > step.id ? "bg-primary" : "bg-border"
+                )} />
               )}
             </div>
           );

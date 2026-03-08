@@ -18,7 +18,7 @@ export function JobSummaryCard({ companyName, positionName, summary, atsKeywords
             <div className="p-2 rounded-lg bg-primary/10">
               <FileText className="w-5 h-5 text-primary" />
             </div>
-            직무 요약
+            Job Summary
           </CardTitle>
         </div>
         <div className="flex flex-wrap gap-2 mt-2">
@@ -36,7 +36,7 @@ export function JobSummaryCard({ companyName, positionName, summary, atsKeywords
         <p className="text-sm leading-relaxed">{summary}</p>
         
         <div className="pt-3 border-t">
-          <p className="text-xs font-medium text-muted-foreground mb-2">ATS 키워드</p>
+          <p className="text-xs font-medium text-muted-foreground mb-2">ATS Keywords</p>
           <div className="flex flex-wrap gap-1.5">
             {atsKeywords.map((keyword, idx) => (
               <Badge 

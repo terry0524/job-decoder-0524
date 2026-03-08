@@ -1,34 +1,28 @@
 import { ResumeGuidance } from '@/types/jobAnalysis';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Heart, 
-  Zap, 
-  Users, 
-  Rocket,
-  PenLine
-} from 'lucide-react';
+import { Heart, Zap, Users, Rocket, PenLine } from 'lucide-react';
 
 interface ResumeGuidanceSectionProps {
   guidance: ResumeGuidance;
 }
 
 const tabs = [
-  { key: 'motivation', label: '지원동기', icon: Heart, color: 'text-pink-500' },
-  { key: 'competency', label: '직무역량', icon: Zap, color: 'text-primary' },
-  { key: 'collaboration', label: '협업·문제해결', icon: Users, color: 'text-secondary' },
-  { key: 'aspiration', label: '입사 후 포부', icon: Rocket, color: 'text-warning' },
+  { key: 'motivation', label: 'Motivation', icon: Heart, color: 'text-destructive' },
+  { key: 'competency', label: 'Competency', icon: Zap, color: 'text-primary' },
+  { key: 'collaboration', label: 'Collaboration', icon: Users, color: 'text-secondary' },
+  { key: 'aspiration', label: 'Aspiration', icon: Rocket, color: 'text-warning' },
 ];
 
 export function ResumeGuidanceSection({ guidance }: ResumeGuidanceSectionProps) {
   return (
-    <Card className="animate-fade-in">
+    <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <div className="p-2 rounded-lg bg-primary/10">
             <PenLine className="w-5 h-5 text-primary" />
           </div>
-          자기소개서 작성 가이드
+          Cover Letter Guide
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -51,13 +45,10 @@ export function ResumeGuidanceSection({ guidance }: ResumeGuidanceSectionProps) 
               <div className="space-y-3">
                 <div className="flex items-center gap-2 pb-2 border-b">
                   <Icon className={`w-5 h-5 ${color}`} />
-                  <h3 className="font-medium">{label} 작성 포인트</h3>
+                  <h3 className="font-medium">{label} — What to Write</h3>
                 </div>
                 {guidance[key as keyof ResumeGuidance].map((point, idx) => (
-                  <div 
-                    key={idx} 
-                    className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-                  >
+                  <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
                       {idx + 1}
                     </div>

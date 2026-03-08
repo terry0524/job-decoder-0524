@@ -11,36 +11,32 @@ interface DifficultyScoreProps {
 
 const levelConfig = {
   easy: {
-    label: '신입 적합',
+    label: 'Entry-Level Friendly',
     color: 'text-success',
     bgColor: 'bg-success/10',
     borderColor: 'border-success/30',
     icon: CheckCircle,
-    progressColor: 'bg-success'
   },
   moderate: {
-    label: '적절한 난이도',
+    label: 'Mid-Level',
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     borderColor: 'border-primary/30',
     icon: Info,
-    progressColor: 'bg-primary'
   },
   challenging: {
-    label: '도전적',
+    label: 'Challenging',
     color: 'text-warning',
     bgColor: 'bg-warning/10',
     borderColor: 'border-warning/30',
     icon: AlertTriangle,
-    progressColor: 'bg-warning'
   },
   difficult: {
-    label: '경력직 성향',
+    label: 'Senior-Level',
     color: 'text-destructive',
     bgColor: 'bg-destructive/10',
     borderColor: 'border-destructive/30',
     icon: AlertTriangle,
-    progressColor: 'bg-destructive'
   }
 };
 
@@ -55,7 +51,7 @@ export function DifficultyScore({ difficulty }: DifficultyScoreProps) {
           <div className={cn("p-1.5 rounded-md", config.bgColor)}>
             <Gauge className={cn("w-4 h-4", config.color)} />
           </div>
-          신입 지원 난이도
+          Difficulty Level
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -67,23 +63,20 @@ export function DifficultyScore({ difficulty }: DifficultyScoreProps) {
             </Badge>
           </div>
           <span className={cn("text-2xl font-bold", config.color)}>
-            {difficulty.score}점
+            {difficulty.score}
           </span>
         </div>
         
         <div className="space-y-1.5">
-          <Progress 
-            value={difficulty.score} 
-            className="h-2"
-          />
+          <Progress value={difficulty.score} className="h-2" />
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>쉬움</span>
-            <span>어려움</span>
+            <span>Easy</span>
+            <span>Difficult</span>
           </div>
         </div>
         
         <div className="pt-2 border-t">
-          <p className="text-sm font-medium mb-2">평가 요인</p>
+          <p className="text-sm font-medium mb-2">Assessment Factors</p>
           <ul className="space-y-1">
             {difficulty.factors.map((factor, idx) => (
               <li key={idx} className="text-xs text-muted-foreground flex items-center gap-1.5">

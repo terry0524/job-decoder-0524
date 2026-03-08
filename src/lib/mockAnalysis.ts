@@ -3,62 +3,46 @@ import { AnalysisResult, ResumeGuidance, ExperienceMatch, ApplicationStrategy, D
 export function analyzeJobPosting(rawContent: string, companyName: string, positionName: string): AnalysisResult {
   const keywords = extractKeywords(rawContent);
   const tools = extractTools(rawContent);
-  const difficulty = assessEntryLevelDifficulty(rawContent);
+  const difficulty = assessDifficulty(rawContent);
+  const responsibilities = extractResponsibilities(rawContent);
+  const requiredSkills = extractRequiredSkills(rawContent);
+  const preferredSkills = extractPreferredSkills(rawContent);
   
   return {
-    jobSummary: `${companyName}의 ${positionName} 포지션으로, 핵심 업무는 사업 기획 및 데이터 기반 의사결정 지원입니다. 협업 능력과 빠른 환경 적응력이 요구되며, 관련 프로젝트 경험이 중요하게 평가됩니다.`,
+    jobSummary: `${companyName} is hiring for a ${positionName} role. The position focuses on delivering measurable results through data-driven decision making, cross-functional collaboration, and strategic planning. Candidates should demonstrate strong analytical skills and adaptability.`,
     
-    coreResponsibilities: [
-      '신규 사업 기획 및 전략 수립',
-      '시장 조사 및 경쟁사 분석',
-      '프로젝트 일정 관리 및 협업',
-      '데이터 기반 의사결정 지원'
-    ],
-    
-    requiredSkills: [
-      '관련 분야 전공 또는 동등 경력',
-      '데이터 분석 도구 활용 능력',
-      '문서 작성 및 프레젠테이션 역량',
-      '원활한 커뮤니케이션 능력'
-    ],
-    
-    preferredSkills: [
-      '유관 산업 인턴/프로젝트 경험',
-      'SQL 또는 Python 활용 경험',
-      '해외 시장 리서치 경험',
-      '스타트업 또는 빠른 환경 적응 경험'
-    ],
-    
+    coreResponsibilities: responsibilities,
+    requiredSkills,
+    preferredSkills,
     toolsAndTechnologies: tools,
-    
     atsKeywords: keywords,
     
     hiddenCriteria: [
-      '단순 참여보다 주도적 역할 경험 선호',
-      '결과물보다 문제 해결 과정 중시',
-      '팀 협업보다 실무 적응력 우선 평가',
-      '빠른 학습 능력과 자기주도성 검증'
+      'Prefers hands-on leadership over passive participation',
+      'Values problem-solving process over final results',
+      'Prioritizes fast learners who adapt to new environments',
+      'Looks for self-driven initiative and ownership'
     ],
     
     requiredExperiences: [
-      '프로젝트 리딩 또는 주도 경험',
-      '데이터 기반 의사결정 경험',
-      '다양한 이해관계자와의 협업 경험',
-      '문제 상황 해결 사례'
+      'Led or owned a project end-to-end',
+      'Made data-informed decisions in a real context',
+      'Collaborated across teams or departments',
+      'Solved a significant problem with measurable outcome'
     ],
     
     recruiterInsights: [
       {
-        category: '경험 선호도',
-        insight: '단순 참여보다 주도 경험 선호 - 본인이 기획하고 실행한 경험을 강조하세요'
+        category: 'Experience Preference',
+        insight: 'They favor candidates who led initiatives, not just participated — highlight ownership.'
       },
       {
-        category: '평가 방식',
-        insight: '결과보다 문제 해결 과정 검증 - 어떻게 해결했는지 과정을 상세히 서술하세요'
+        category: 'Evaluation Focus',
+        insight: 'They verify your problem-solving process, not just outcomes — describe your approach step by step.'
       },
       {
-        category: '핵심 역량',
-        insight: '협업보다 실무 적응력 우선 - 새로운 환경에서 빠르게 적응한 사례를 준비하세요'
+        category: 'Core Competency',
+        insight: 'Adaptability matters more than teamwork claims — share examples of thriving in new environments.'
       }
     ],
     
@@ -69,24 +53,24 @@ export function analyzeJobPosting(rawContent: string, companyName: string, posit
 export function generateResumeGuidance(analysis: AnalysisResult): ResumeGuidance {
   return {
     motivation: [
-      '회사의 핵심 사업과 본인의 관심 분야 연결',
-      '해당 직무에서 성장하고 싶은 구체적 방향',
-      '회사가 추구하는 가치와 본인의 경험 연결'
+      'Connect the company\'s core business to your personal interests',
+      'Show a specific growth direction within this role',
+      'Link company values to your own experiences'
     ],
     competency: [
-      '필수 역량 중 본인이 갖춘 것을 구체적 사례로 증명',
-      '우대 역량이 있다면 실제 활용 경험 언급',
-      '숫자나 결과물로 역량을 객관화'
+      'Prove required skills with concrete examples and metrics',
+      'Mention preferred skills with real usage context',
+      'Quantify your impact with numbers or deliverables'
     ],
     collaboration: [
-      '갈등 상황에서 합의점을 찾은 경험',
-      '다양한 배경의 팀원과 협업한 사례',
-      '문제 상황에서 주도적으로 해결한 경험'
+      'Describe resolving a conflict to reach consensus',
+      'Share a cross-functional team collaboration example',
+      'Highlight a time you took initiative to solve a problem'
     ],
     aspiration: [
-      '입사 후 1년 내 달성하고 싶은 구체적 목표',
-      '회사에 기여할 수 있는 본인만의 강점',
-      '장기적 성장 비전과 회사 방향 연결'
+      'Set a specific goal achievable within your first year',
+      'Identify your unique strength and how it benefits the team',
+      'Align your long-term vision with the company direction'
     ]
   };
 }
@@ -94,30 +78,40 @@ export function generateResumeGuidance(analysis: AnalysisResult): ResumeGuidance
 export function generateApplicationStrategy(analysis: AnalysisResult): ApplicationStrategy {
   return {
     keyStrengthsToHighlight: [
-      '데이터 분석 및 인사이트 도출 경험',
-      '프로젝트 주도 및 실행 경험',
-      '빠른 학습 능력과 적응력',
-      '명확한 커뮤니케이션 역량'
+      'Data analysis and insight generation experience',
+      'Project ownership and execution track record',
+      'Fast learning ability and adaptability',
+      'Clear and structured communication skills'
     ],
     experiencesToPrepare: [
-      '문제 정의부터 해결까지 주도한 프로젝트 사례',
-      '데이터를 활용해 의사결정을 내린 경험',
-      '새로운 환경에서 빠르게 성과를 낸 경험',
-      '이해관계자 설득 및 협업 사례'
+      'A project you led from problem definition to solution',
+      'A data-driven decision you made with real impact',
+      'An example of quickly delivering results in a new setting',
+      'A stakeholder management or persuasion scenario'
     ],
     questionsToAnticipate: [
-      '가장 도전적이었던 프로젝트와 해결 과정',
-      '팀에서 갈등이 있었을 때 대응 방식',
-      '왜 이 직무/회사에 관심을 갖게 되었는지',
-      '입사 후 어떤 기여를 할 수 있는지'
+      'What was your most challenging project and how did you solve it?',
+      'How do you handle team conflicts or disagreements?',
+      'Why are you interested in this role and company?',
+      'What value can you bring in your first 90 days?'
     ],
     commonMistakesToAvoid: [
-      '추상적인 역량 나열 대신 구체적 사례 제시',
-      '모든 역량을 다 보여주려 하지 말고 핵심에 집중',
-      '회사 정보 없이 일반적인 지원동기 작성',
-      '결과만 나열하지 말고 과정과 배움 강조'
+      'Listing vague skills instead of concrete examples',
+      'Trying to cover everything instead of focusing on strengths',
+      'Writing generic motivation without company research',
+      'Showing only results without explaining the process'
     ]
   };
+}
+
+export function generateResumeKeywords(analysis: AnalysisResult): string[] {
+  const allKeywords = [
+    ...analysis.atsKeywords,
+    ...analysis.requiredSkills.slice(0, 3),
+    ...analysis.toolsAndTechnologies.slice(0, 3),
+  ];
+  // Deduplicate
+  return [...new Set(allKeywords)];
 }
 
 export function matchExperiences(userExperiences: string[], analysis: AnalysisResult): ExperienceMatch[] {
@@ -141,15 +135,15 @@ export function matchExperiences(userExperiences: string[], analysis: AnalysisRe
       r.toLowerCase().includes(lowerExp) || lowerExp.includes(r.toLowerCase())
     )) {
       matchLevel = 'strong';
-      explanation = '공고의 핵심 요구사항과 직접 연결됩니다';
+      explanation = 'Directly aligns with core job requirements';
     } else if (matchCount >= 1 || analysis.preferredSkills.some(p => 
       p.toLowerCase().includes(lowerExp)
     )) {
       matchLevel = 'moderate';
-      explanation = '우대 역량과 연결되어 보완 서술이 필요합니다';
+      explanation = 'Relates to preferred qualifications — add supporting context';
     } else {
       matchLevel = 'weak';
-      explanation = '직접적 연결이 약하므로 다른 경험으로 대체 고려';
+      explanation = 'Weak connection — consider replacing with a stronger experience';
     }
     
     return { keyword: exp, matchLevel, explanation };
@@ -157,79 +151,176 @@ export function matchExperiences(userExperiences: string[], analysis: AnalysisRe
 }
 
 function extractKeywords(text: string): string[] {
-  const commonKeywords = [
-    '기획', '분석', '협업', '문제해결', '데이터', 
-    '전략', '커뮤니케이션', '프로젝트', '리더십', '혁신',
-    '성장', '도전', '주도', '실행', '성과'
-  ];
+  const keywordMap: Record<string, string[]> = {
+    'Python': ['python'],
+    'SQL': ['sql'],
+    'Data Analysis': ['data analysis', 'analyze data', 'data-driven'],
+    'Machine Learning': ['machine learning', 'ml model', 'ml'],
+    'Statistics': ['statistics', 'statistical'],
+    'Communication': ['communication', 'communicate'],
+    'Project Management': ['project management', 'manage project'],
+    'Leadership': ['leadership', 'lead', 'leading'],
+    'Problem Solving': ['problem solving', 'problem-solving'],
+    'Collaboration': ['collaboration', 'collaborate', 'teamwork', 'cross-functional'],
+    'Strategy': ['strategy', 'strategic'],
+    'Research': ['research'],
+    'Planning': ['planning', 'plan'],
+    'Innovation': ['innovation', 'innovative'],
+    'Data Pipeline': ['data pipeline', 'pipeline', 'etl'],
+  };
   
-  return commonKeywords.filter(keyword => 
-    text.includes(keyword)
-  ).slice(0, 8);
+  const lowerText = text.toLowerCase();
+  const found = Object.entries(keywordMap)
+    .filter(([, triggers]) => triggers.some(t => lowerText.includes(t)))
+    .map(([keyword]) => keyword);
+  
+  if (found.length < 3) {
+    const defaults = ['Communication', 'Problem Solving', 'Collaboration', 'Data Analysis'];
+    defaults.forEach(d => { if (!found.includes(d)) found.push(d); });
+  }
+  
+  return found.slice(0, 10);
 }
 
 function extractTools(text: string): string[] {
   const tools = [
-    'Excel', 'PowerPoint', 'SQL', 'Python', 'Tableau',
-    'Google Analytics', 'Figma', 'Notion', 'Slack', 'Jira'
+    'Excel', 'PowerPoint', 'SQL', 'Python', 'R', 'Tableau',
+    'Google Analytics', 'Figma', 'Notion', 'Slack', 'Jira',
+    'TensorFlow', 'PyTorch', 'AWS', 'GCP', 'Azure', 'Docker',
+    'Git', 'Jupyter', 'Spark'
   ];
   
   const found = tools.filter(tool => 
     text.toLowerCase().includes(tool.toLowerCase())
   );
   
-  // Default tools if none found
-  if (found.length === 0) {
-    return ['Excel', 'PowerPoint', 'SQL', 'Collaboration Tools'];
-  }
-  
-  return found;
+  return found.length > 0 ? found : ['Excel', 'SQL', 'Python', 'Collaboration Tools'];
 }
 
-function assessEntryLevelDifficulty(text: string): DifficultyAssessment {
+function extractResponsibilities(text: string): string[] {
+  const responsibilityPatterns: Record<string, string[]> = {
+    'Analyze large datasets to derive actionable insights': ['data', 'analysis', 'analyze', 'insight'],
+    'Develop and deploy machine learning models': ['machine learning', 'model', 'ml'],
+    'Optimize key performance metrics and KPIs': ['performance', 'metric', 'kpi', 'optimize'],
+    'Collaborate with cross-functional teams': ['collaborate', 'cross-functional', 'team'],
+    'Create reports and presentations for stakeholders': ['report', 'presentation', 'stakeholder'],
+    'Design and implement data pipelines': ['pipeline', 'etl', 'data pipeline'],
+    'Conduct market research and competitive analysis': ['market', 'research', 'competitive'],
+    'Manage project timelines and deliverables': ['project', 'timeline', 'deliverable'],
+  };
+  
   const lowerText = text.toLowerCase();
+  const found = Object.entries(responsibilityPatterns)
+    .filter(([, triggers]) => triggers.some(t => lowerText.includes(t)))
+    .map(([resp]) => resp);
   
-  let score = 50; // Base score
-  const factors: string[] = [];
-  
-  // Check for experience requirements
-  if (lowerText.includes('경력') || lowerText.includes('년 이상')) {
-    score += 20;
-    factors.push('경력 요구사항이 명시됨');
+  if (found.length < 3) {
+    return [
+      'Analyze data and generate business insights',
+      'Collaborate with cross-functional teams',
+      'Manage project timelines and deliverables',
+      'Create reports and presentations'
+    ];
   }
   
-  // Check for technical requirements
-  const techTerms = ['sql', 'python', 'java', 'api', 'database'];
+  return found.slice(0, 6);
+}
+
+function extractRequiredSkills(text: string): string[] {
+  const skillPatterns: Record<string, string[]> = {
+    'Python programming': ['python'],
+    'SQL and database management': ['sql', 'database'],
+    'Data analysis and visualization': ['data analysis', 'visualization', 'analyze'],
+    'Machine learning fundamentals': ['machine learning', 'ml'],
+    'Statistical analysis': ['statistics', 'statistical'],
+    'Communication skills': ['communication'],
+    'Problem-solving ability': ['problem solving', 'problem-solving'],
+    'Project management': ['project management'],
+  };
+  
+  const lowerText = text.toLowerCase();
+  const found = Object.entries(skillPatterns)
+    .filter(([, triggers]) => triggers.some(t => lowerText.includes(t)))
+    .map(([skill]) => skill);
+  
+  if (found.length < 3) {
+    return [
+      'Relevant degree or equivalent experience',
+      'Data analysis tool proficiency',
+      'Strong written and verbal communication',
+      'Analytical and problem-solving skills'
+    ];
+  }
+  
+  return found.slice(0, 6);
+}
+
+function extractPreferredSkills(text: string): string[] {
+  const prefPatterns: Record<string, string[]> = {
+    'Deep Learning experience': ['deep learning', 'neural network'],
+    'A/B Testing methodology': ['a/b test', 'ab test', 'experimentation'],
+    'Cloud platform experience (AWS/GCP/Azure)': ['aws', 'gcp', 'azure', 'cloud'],
+    'Industry internship experience': ['intern', 'internship'],
+    'International market research': ['international', 'global', 'overseas'],
+    'Startup or fast-paced environment experience': ['startup', 'fast-paced'],
+    'Advanced SQL or Python scripting': ['advanced sql', 'scripting'],
+  };
+  
+  const lowerText = text.toLowerCase();
+  const found = Object.entries(prefPatterns)
+    .filter(([, triggers]) => triggers.some(t => lowerText.includes(t)))
+    .map(([skill]) => skill);
+  
+  if (found.length < 2) {
+    return [
+      'Industry internship or project experience',
+      'SQL or Python hands-on experience',
+      'International or cross-market exposure',
+      'Startup or fast-paced environment background'
+    ];
+  }
+  
+  return found.slice(0, 5);
+}
+
+function assessDifficulty(text: string): DifficultyAssessment {
+  const lowerText = text.toLowerCase();
+  
+  let score = 50;
+  const factors: string[] = [];
+  
+  if (lowerText.includes('years of experience') || lowerText.includes('경력') || lowerText.includes('senior')) {
+    score += 20;
+    factors.push('Explicit experience requirement detected');
+  }
+  
+  const techTerms = ['sql', 'python', 'java', 'api', 'database', 'machine learning', 'tensorflow', 'docker'];
   const techCount = techTerms.filter(t => lowerText.includes(t)).length;
   if (techCount >= 2) {
     score += 15;
-    factors.push('다수의 기술 역량 요구');
+    factors.push('Multiple technical skills required');
   }
   
-  // Check for leadership requirements
-  if (lowerText.includes('리더십') || lowerText.includes('관리')) {
+  if (lowerText.includes('leadership') || lowerText.includes('manage') || lowerText.includes('lead a team')) {
     score += 10;
-    factors.push('리더십/관리 경험 필요');
+    factors.push('Leadership or management experience expected');
   }
   
-  // Check for industry experience
-  if (lowerText.includes('업계 경험') || lowerText.includes('산업 경험')) {
+  if (lowerText.includes('industry experience') || lowerText.includes('domain expertise')) {
     score += 15;
-    factors.push('특정 산업 경험 선호');
+    factors.push('Specific industry experience preferred');
   }
   
-  // Positive factors for entry-level
-  if (lowerText.includes('신입') || lowerText.includes('인턴')) {
+  if (lowerText.includes('entry-level') || lowerText.includes('junior') || lowerText.includes('intern') || lowerText.includes('신입')) {
     score -= 20;
-    factors.push('신입/인턴 환영');
+    factors.push('Entry-level / junior candidates welcome');
   }
   
-  if (lowerText.includes('교육') || lowerText.includes('성장')) {
+  if (lowerText.includes('training') || lowerText.includes('mentorship') || lowerText.includes('growth')) {
     score -= 10;
-    factors.push('성장 가능성 중시');
+    factors.push('Growth and learning opportunities emphasized');
   }
   
-  // Clamp score
   score = Math.max(20, Math.min(95, score));
   
   let level: DifficultyAssessment['level'];
@@ -237,20 +328,20 @@ function assessEntryLevelDifficulty(text: string): DifficultyAssessment {
   
   if (score <= 35) {
     level = 'easy';
-    recommendation = '신입에게 적합한 포지션입니다. 기본기와 열정을 강조하세요.';
+    recommendation = 'Entry-level friendly. Focus on fundamentals and enthusiasm.';
   } else if (score <= 55) {
     level = 'moderate';
-    recommendation = '적절한 난이도입니다. 관련 경험이나 프로젝트를 잘 어필하세요.';
+    recommendation = 'Moderate difficulty. Highlight relevant projects and coursework.';
   } else if (score <= 75) {
     level = 'challenging';
-    recommendation = '도전적인 포지션입니다. 차별화된 경험과 역량을 강조하세요.';
+    recommendation = 'Challenging for entry-level. Differentiate with strong portfolio work.';
   } else {
     level = 'difficult';
-    recommendation = '경력직 성향이 강합니다. 신입으로 지원 시 특출난 역량 증명이 필요합니다.';
+    recommendation = 'Senior-leaning role. Entry-level candidates need exceptional proof of skills.';
   }
   
   if (factors.length === 0) {
-    factors.push('일반적인 신입 채용 요건');
+    factors.push('Standard entry-level requirements');
   }
   
   return { score, level, factors, recommendation };
