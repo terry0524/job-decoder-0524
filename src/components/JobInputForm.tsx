@@ -27,12 +27,10 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
     }
   };
 
-  const handleLoadSample = () => {
-    if (sampleData) {
-      setCompanyName(sampleData.companyName);
-      setPositionName(sampleData.positionName);
-      setRawContent(sampleData.rawContent);
-    }
+  const handleLoadSample = (sample: SampleJD) => {
+    setCompanyName(sample.companyName);
+    setPositionName(sample.positionName);
+    setRawContent(sample.rawContent);
   };
 
   const isValid = companyName && positionName && rawContent.length > 50;
