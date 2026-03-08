@@ -52,19 +52,17 @@ export function JdMatchScoreCard({ result }: JdMatchScoreCardProps) {
       </Card>
 
       {/* Two-column: Matching + Missing */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Matching Skills */}
-        <Card className="border-success/20">
-          <CardHeader className="pb-2.5">
-            <CardTitle className="flex items-center gap-2 text-sm">
-              <div className="w-7 h-7 rounded-md bg-success/10 flex items-center justify-center">
-                <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+        <Card className="border-success/15">
+          <CardHeader className="pb-2 pt-4 px-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-success">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                Matching Skills
               </div>
-              <div>
-                <span className="font-semibold">Matching Skills</span>
-                <span className="text-[10px] text-muted-foreground ml-1.5">{matchingSkills.length}개 일치</span>
-              </div>
-            </CardTitle>
+              <span className="text-[10px] text-muted-foreground font-medium">{matchingSkills.length}개 일치</span>
+            </div>
           </CardHeader>
           <CardContent>
             {matchingSkills.length > 0 ? (
