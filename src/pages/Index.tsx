@@ -18,6 +18,7 @@ import { getHistory, saveToHistory, HistoryEntry } from '@/lib/analysisHistory';
 import { sampleJobDescription } from '@/lib/sampleJobDescription';
 import { Button } from '@/components/ui/button';
 import { FileText, RotateCcw, Search, Zap, Shield } from 'lucide-react';
+import { ReportHeader } from '@/components/ReportHeader';
 
 const Index = () => {
   const [analysis, setAnalysis] = useState<FullAnalysis | null>(null);
@@ -165,18 +166,21 @@ const Index = () => {
             />
           </div>
         ) : (
-          <div className="py-8 space-y-10" ref={reportRef}>
-            {/* Result Header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">분석 결과</p>
-                <h2 className="text-2xl font-bold tracking-tight">
-                  {analysis.jobPosting.companyName} · {analysis.jobPosting.positionName}
-                </h2>
-              </div>
-            </div>
+          <div className="py-8 space-y-8" ref={reportRef}>
+            {/* Report Header with Quick Summary */}
+            <ReportHeader
+              companyName={analysis.jobPosting.companyName}
+              positionName={analysis.jobPosting.positionName}
+              topSkills={analysis.analysis.requiredSkills.slice(0, 3)}
+              difficulty={
+                analysis.analysis.entryLevelDifficulty.level === 'easy' ? 'Entry-Level' :
+                analysis.analysis.entryLevelDifficulty.level === 'moderate' ? 'Mid-Level' :
+                analysis.analysis.entryLevelDifficulty.level === 'challenging' ? 'Senior-Level' : 'Expert-Level'
+              }
+              summary={analysis.analysis.jobSummary}
+            />
 
-            {/* Summary + Difficulty */}
+            {/* 1. 채용공고 요약 + 난이도 */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div className="lg:col-span-2">
                 <JobSummaryCard 
@@ -191,7 +195,7 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Skills — highlighted */}
+            {/* 2. 필수/우대 기술 + 주요 업무 */}
             <SkillsSection 
               requiredSkills={analysis.analysis.requiredSkills}
               preferredSkills={analysis.analysis.preferredSkills}
@@ -199,14 +203,7 @@ const Index = () => {
               responsibilities={analysis.analysis.coreResponsibilities}
             />
 
-            {/* Hidden Requirements */}
-            <HiddenRequirementsSection 
-              hiddenCriteria={analysis.analysis.hiddenCriteria}
-              requiredExperiences={analysis.analysis.requiredExperiences}
-              recruiterInsights={analysis.analysis.recruiterInsights}
-            />
-
-            {/* Strategy + Dashboard */}
+            {/* 3. 지원 전략 + 대시보드 */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div className="lg:col-span-2">
                 <StrategySection strategy={analysis.applicationStrategy} />
@@ -226,7 +223,14 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Resume Guidance + Keywords */}
+            {/* 4. 숨겨진 요구사항 */}
+            <HiddenRequirementsSection 
+              hiddenCriteria={analysis.analysis.hiddenCriteria}
+              requiredExperiences={analysis.analysis.requiredExperiences}
+              recruiterInsights={analysis.analysis.recruiterInsights}
+            />
+
+            {/* 5. 이력서 가이드 + 키워드 */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div className="lg:col-span-2">
                 <ResumeGuidanceSection guidance={analysis.resumeGuidance} />
