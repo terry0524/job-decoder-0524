@@ -18,6 +18,7 @@ import { getHistory, saveToHistory, HistoryEntry } from '@/lib/analysisHistory';
 import { sampleJobDescription } from '@/lib/sampleJobDescription';
 import { Button } from '@/components/ui/button';
 import { FileText, RotateCcw, Search, Zap, Shield } from 'lucide-react';
+import { ReportHeader } from '@/components/ReportHeader';
 
 const Index = () => {
   const [analysis, setAnalysis] = useState<FullAnalysis | null>(null);
