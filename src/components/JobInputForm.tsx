@@ -21,6 +21,9 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
   const [positionName, setPositionName] = useState('');
   const [rawContent, setRawContent] = useState('');
   const [resumeText, setResumeText] = useState('');
+  const [jobUrl, setJobUrl] = useState('');
+  const [isScraping, setIsScraping] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +36,29 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
     setCompanyName(sample.companyName);
     setPositionName(sample.positionName);
     setRawContent(sample.rawContent);
+  };
+
+  const handleScrapeUrl = async () => {
+    if (!jobUrl.trim()) return;
+    setIsScraping(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('scrape-job-url', {
+        body: { url: jobUrl.trim() },
+      });
+      if (error) throw new Error(error.message);
+      if (data?.error) {
+        toast({ title: 'URL 처리 실패', description: data.error, variant: 'destructive' });
+        return;
+      }
+      if (data?.companyName) setCompanyName(data.companyName);
+      if (data?.positionName) setPositionName(data.positionName);
+      if (data?.rawContent) setRawContent(data.rawContent);
+      toast({ title: '채용공고 불러오기 완료', description: `${data.companyName} - ${data.positionName}` });
+    } catch (err: any) {
+      toast({ title: 'URL 스크래핑 실패', description: err?.message || '페이지를 가져올 수 없습니다.', variant: 'destructive' });
+    } finally {
+      setIsScraping(false);
+    }
   };
 
   const isValid = companyName && positionName && rawContent.length > 50;
