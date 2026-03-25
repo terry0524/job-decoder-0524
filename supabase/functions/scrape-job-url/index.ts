@@ -6,13 +6,18 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const EXTRACTION_PROMPT = `You extract job posting information from content. The content may be text from a webpage, a PDF document, or an image of a job posting.
+const EXTRACTION_PROMPT = `You extract job posting information from content. The content may include:
+- Text from a webpage
+- A PDF document
+- Images embedded in a job posting page (these often contain the MAIN job description details like responsibilities, requirements, qualifications)
+
+IMPORTANT: Many Korean job posting sites put the actual job description content inside images, not in text. You MUST carefully read and extract text from ALL provided images, as they likely contain the core job information.
 
 Return ONLY valid JSON with this exact structure:
 {
   "companyName": "company name (keep original language)",
   "positionName": "job title/position name (keep original language)",
-  "rawContent": "the full job description content, cleaned up and formatted nicely. Include responsibilities, requirements, qualifications, benefits etc. Keep the original language. Remove navigation, footer, cookie notices, and other non-JD content."
+  "rawContent": "the COMPLETE job description content combining text AND image content. Include ALL details: responsibilities, requirements, qualifications, benefits, etc. Keep the original language. Be thorough - do not skip any information visible in the images."
 }
 
 If the content does not appear to be a job posting, return:
@@ -36,23 +41,58 @@ function stripHtml(html: string): string {
 }
 
 function extractImageUrls(html: string, baseUrl: string): string[] {
-  const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
   const urls: string[] = [];
+
+  // Extract from <img> tags
+  const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
   let match;
   while ((match = imgRegex.exec(html)) !== null) {
-    let src = match[1];
+    urls.push(match[1]);
+  }
+
+  // Extract from CSS background-image
+  const bgRegex = /background(?:-image)?\s*:\s*url\(["']?([^"')]+)["']?\)/gi;
+  while ((match = bgRegex.exec(html)) !== null) {
+    urls.push(match[1]);
+  }
+
+  // Extract from <source> tags (picture elements)
+  const sourceRegex = /<source[^>]+srcset=["']([^"'\s]+)/gi;
+  while ((match = sourceRegex.exec(html)) !== null) {
+    urls.push(match[1]);
+  }
+
+  // Normalize and filter URLs
+  const normalized: string[] = [];
+  const seen = new Set<string>();
+
+  for (let src of urls) {
+    if (src.startsWith("data:")) continue;
     if (src.startsWith("//")) src = "https:" + src;
     else if (src.startsWith("/")) {
       try {
         const u = new URL(baseUrl);
         src = u.origin + src;
       } catch { continue; }
-    } else if (!src.startsWith("http")) continue;
-    // Skip tiny icons, tracking pixels, etc.
-    if (src.includes("logo") || src.includes("favicon") || src.includes("icon") || src.includes("pixel") || src.includes("tracking")) continue;
-    urls.push(src);
+    } else if (!src.startsWith("http")) {
+      try {
+        src = new URL(src, baseUrl).toString();
+      } catch { continue; }
+    }
+
+    // Only skip very obvious non-content images
+    const lower = src.toLowerCase();
+    if (lower.includes("favicon") || lower.includes("pixel") || lower.includes("tracking") ||
+        lower.includes("analytics") || lower.includes("1x1") || lower.includes("spacer") ||
+        lower.endsWith(".gif") && lower.includes("blank")) continue;
+
+    if (!seen.has(src)) {
+      seen.add(src);
+      normalized.push(src);
+    }
   }
-  return urls.slice(0, 5); // Max 5 images
+
+  return normalized.slice(0, 10); // Up to 10 images
 }
 
 async function fetchAsBase64(url: string, maxSizeMb = 10): Promise<{ base64: string; mimeType: string } | null> {
@@ -62,15 +102,26 @@ async function fetchAsBase64(url: string, maxSizeMb = 10): Promise<{ base64: str
     });
     if (!resp.ok) return null;
     const contentType = resp.headers.get("content-type") || "application/octet-stream";
+    const mime = contentType.split(";")[0].trim();
+    // Only process images and PDFs
+    if (!mime.startsWith("image/") && mime !== "application/pdf") return null;
     const buf = await resp.arrayBuffer();
     if (buf.byteLength > maxSizeMb * 1024 * 1024) return null;
+    if (buf.byteLength < 1000) return null; // Skip tiny images (likely icons/spacers)
     const bytes = new Uint8Array(buf);
     let binary = "";
     for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-    return { base64: btoa(binary), mimeType: contentType.split(";")[0].trim() };
+    return { base64: btoa(binary), mimeType: mime };
   } catch {
     return null;
   }
+}
+
+function arrayBufferToBase64(buf: ArrayBuffer): string {
+  const bytes = new Uint8Array(buf);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
 }
 
 async function callAI(apiKey: string, messages: any[]) {
@@ -89,12 +140,14 @@ async function callAI(apiKey: string, messages: any[]) {
 
   if (!response.ok) {
     const status = response.status;
-    throw new Error(`AI gateway error: ${status}`);
+    if (status === 429) throw new Error("요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.");
+    if (status === 402) throw new Error("AI 크레딧이 부족합니다.");
+    throw new Error(`AI 처리 중 오류가 발생했습니다 (${status})`);
   }
 
   const data = await response.json();
   let content = data.choices?.[0]?.message?.content;
-  if (!content) throw new Error("Empty AI response");
+  if (!content) throw new Error("AI 응답을 받지 못했습니다.");
   content = content.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "").trim();
   return JSON.parse(content);
 }
@@ -132,12 +185,11 @@ serve(async (req) => {
       );
     }
 
-    // Fetch the page
     const pageResponse = await fetch(parsedUrl.toString(), {
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; JobDecoder/1.0)",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,application/pdf,*/*;q=0.8",
-        "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,application/pdf,image/*;q=0.8,*/*;q=0.7",
+        "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
       },
     });
 
@@ -159,10 +211,6 @@ serve(async (req) => {
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      const bytes = new Uint8Array(buf);
-      let binary = "";
-      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-      const base64 = btoa(binary);
 
       const parsed = await callAI(LOVABLE_API_KEY, [
         { role: "system", content: EXTRACTION_PROMPT },
@@ -170,7 +218,7 @@ serve(async (req) => {
           role: "user",
           content: [
             { type: "text", text: `URL: ${parsedUrl.toString()}\n\nPDF 문서에서 채용공고 정보를 추출하세요.` },
-            { type: "image_url", image_url: { url: `data:application/pdf;base64,${base64}` } },
+            { type: "image_url", image_url: { url: `data:application/pdf;base64,${arrayBufferToBase64(buf)}` } },
           ],
         },
       ]);
@@ -180,7 +228,7 @@ serve(async (req) => {
       });
     }
 
-    // === Case 2: Image file directly ===
+    // === Case 2: Direct image ===
     if (contentType.includes("image/")) {
       const buf = await pageResponse.arrayBuffer();
       if (buf.byteLength > 10 * 1024 * 1024) {
@@ -189,19 +237,14 @@ serve(async (req) => {
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      const bytes = new Uint8Array(buf);
-      let binary = "";
-      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-      const base64 = btoa(binary);
       const mime = contentType.split(";")[0].trim();
-
       const parsed = await callAI(LOVABLE_API_KEY, [
         { role: "system", content: EXTRACTION_PROMPT },
         {
           role: "user",
           content: [
             { type: "text", text: `이미지에서 채용공고 정보를 추출하세요.` },
-            { type: "image_url", image_url: { url: `data:${mime};base64,${base64}` } },
+            { type: "image_url", image_url: { url: `data:${mime};base64,${arrayBufferToBase64(buf)}` } },
           ],
         },
       ]);
@@ -211,62 +254,46 @@ serve(async (req) => {
       });
     }
 
-    // === Case 3: HTML page ===
+    // === Case 3: HTML page — ALWAYS analyze both text AND images ===
     const html = await pageResponse.text();
-    const textContent = stripHtml(html).slice(0, 15000);
-
-    // If text is too short, the JD might be in images
-    if (textContent.length < 200) {
-      const imageUrls = extractImageUrls(html, parsedUrl.toString());
-      if (imageUrls.length > 0) {
-        // Fetch images and send to vision AI
-        const imageContents: any[] = [
-          { type: "text", text: `이 웹페이지의 이미지에서 채용공고 정보를 추출하세요. URL: ${parsedUrl.toString()}` },
-        ];
-        for (const imgUrl of imageUrls) {
-          const imgData = await fetchAsBase64(imgUrl);
-          if (imgData) {
-            imageContents.push({
-              type: "image_url",
-              image_url: { url: `data:${imgData.mimeType};base64,${imgData.base64}` },
-            });
-          }
-        }
-        if (imageContents.length > 1) {
-          const parsed = await callAI(LOVABLE_API_KEY, [
-            { role: "system", content: EXTRACTION_PROMPT },
-            { role: "user", content: imageContents },
-          ]);
-          return new Response(JSON.stringify(parsed), {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-      }
-
-      return new Response(
-        JSON.stringify({ error: "페이지에서 충분한 텍스트를 추출할 수 없습니다." }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Normal text-based page — also check for large images that might contain JD info
+    const textContent = stripHtml(html).slice(0, 12000);
     const imageUrls = extractImageUrls(html, parsedUrl.toString());
+
+    console.log(`Extracted ${textContent.length} chars of text and found ${imageUrls.length} images`);
+
+    // Build multimodal content: text + all fetchable images
     const userContent: any[] = [
-      { type: "text", text: `URL: ${parsedUrl.toString()}\n\nPage content:\n${textContent}` },
+      {
+        type: "text",
+        text: `URL: ${parsedUrl.toString()}\n\n아래는 이 채용공고 페이지의 텍스트와 이미지입니다. 많은 한국 채용사이트에서 실제 채용 상세 내용은 이미지 안에 들어있습니다. 텍스트와 이미지를 모두 분석하여 채용공고 정보를 완전하게 추출하세요.\n\n=== 페이지 텍스트 ===\n${textContent || "(텍스트 없음)"}`,
+      },
     ];
 
-    // If there are significant images, include up to 3 for supplementary info
+    // Fetch all images in parallel
     if (imageUrls.length > 0) {
-      const imagesToInclude = imageUrls.slice(0, 3);
-      for (const imgUrl of imagesToInclude) {
-        const imgData = await fetchAsBase64(imgUrl, 5);
-        if (imgData && imgData.mimeType.startsWith("image/")) {
+      console.log(`Fetching ${imageUrls.length} images...`);
+      const imageResults = await Promise.allSettled(
+        imageUrls.map((imgUrl) => fetchAsBase64(imgUrl, 5))
+      );
+
+      let addedImages = 0;
+      for (const result of imageResults) {
+        if (result.status === "fulfilled" && result.value) {
           userContent.push({
             type: "image_url",
-            image_url: { url: `data:${imgData.mimeType};base64,${imgData.base64}` },
+            image_url: { url: `data:${result.value.mimeType};base64,${result.value.base64}` },
           });
+          addedImages++;
         }
       }
+      console.log(`Added ${addedImages} images to AI request`);
+    }
+
+    if (textContent.length < 50 && userContent.length === 1) {
+      return new Response(
+        JSON.stringify({ error: "페이지에서 텍스트나 이미지를 추출할 수 없습니다." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     const parsed = await callAI(LOVABLE_API_KEY, [
