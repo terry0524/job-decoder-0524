@@ -5,8 +5,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Briefcase, Building2, FileText, Sparkles, BookOpen, Loader2, User, ChevronDown } from 'lucide-react';
+import { Briefcase, Building2, FileText, Sparkles, BookOpen, Loader2, User, ChevronDown, Link2, ArrowRight } from 'lucide-react';
 import { SampleJD } from '@/lib/sampleJobDescription';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface JobInputFormProps {
   onSubmit: (data: { companyName: string; positionName: string; rawContent: string; resumeText?: string }) => void;
