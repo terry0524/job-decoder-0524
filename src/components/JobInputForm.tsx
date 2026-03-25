@@ -79,6 +79,48 @@ export function JobInputForm({ onSubmit, isLoading, sampleData }: JobInputFormPr
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* URL Input */}
+          <div className="flex items-end gap-2 mb-4">
+            <div className="flex-1 space-y-1.5">
+              <Label htmlFor="jobUrl" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <Link2 className="w-3 h-3" />
+                채용공고 URL 붙여넣기
+                <span className="text-[10px] text-muted-foreground/50 ml-1">(선택)</span>
+              </Label>
+              <Input
+                id="jobUrl"
+                placeholder="https://careers.example.com/jobs/..."
+                value={jobUrl}
+                onChange={(e) => setJobUrl(e.target.value)}
+                className="h-9"
+                disabled={isScraping}
+              />
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              className="h-9 gap-1.5 text-xs shrink-0"
+              onClick={handleScrapeUrl}
+              disabled={!jobUrl.trim() || isScraping}
+            >
+              {isScraping ? (
+                <><Loader2 className="w-3.5 h-3.5 animate-spin" />불러오는 중...</>
+              ) : (
+                <><ArrowRight className="w-3.5 h-3.5" />자동 입력</>
+              )}
+            </Button>
+          </div>
+
+          <div className="relative mb-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-border/40" />
+            </div>
+            <div className="relative flex justify-center text-[10px] uppercase">
+              <span className="bg-card px-2 text-muted-foreground/60">또는 직접 입력</span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-1.5">
