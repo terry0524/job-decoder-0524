@@ -95,24 +95,46 @@ function extractImageUrls(html: string, baseUrl: string): string[] {
   return normalized.slice(0, 10); // Up to 10 images
 }
 
-async function fetchAsBase64(url: string, maxSizeMb = 10): Promise<{ base64: string; mimeType: string } | null> {
+async function fetchAsBase64(url: string, refererUrl: string, maxSizeMb = 10): Promise<{ base64: string; mimeType: string } | null> {
   try {
     const resp = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; JobDecoder/1.0)" },
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Referer": refererUrl,
+        "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+      },
+      redirect: "follow",
     });
-    if (!resp.ok) return null;
+    if (!resp.ok) {
+      console.log(`Image fetch failed: ${resp.status} for ${url.substring(0, 100)}`);
+      return null;
+    }
     const contentType = resp.headers.get("content-type") || "application/octet-stream";
     const mime = contentType.split(";")[0].trim();
-    // Only process images and PDFs
-    if (!mime.startsWith("image/") && mime !== "application/pdf") return null;
+    // Accept images, PDFs, and octet-stream (some servers don't set correct content-type)
+    if (!mime.startsWith("image/") && mime !== "application/pdf" && mime !== "application/octet-stream") {
+      console.log(`Skipped non-image content-type: ${mime} for ${url.substring(0, 100)}`);
+      return null;
+    }
     const buf = await resp.arrayBuffer();
     if (buf.byteLength > maxSizeMb * 1024 * 1024) return null;
-    if (buf.byteLength < 1000) return null; // Skip tiny images (likely icons/spacers)
+    if (buf.byteLength < 500) return null; // Skip very tiny images
+    // For octet-stream, try to detect image by magic bytes
+    if (mime === "application/octet-stream") {
+      const header = new Uint8Array(buf.slice(0, 4));
+      const isImage = (header[0] === 0xFF && header[1] === 0xD8) || // JPEG
+                      (header[0] === 0x89 && header[1] === 0x50) || // PNG
+                      (header[0] === 0x52 && header[1] === 0x49) || // WEBP (RIFF)
+                      (header[0] === 0x47 && header[1] === 0x49);   // GIF
+      if (!isImage) return null;
+    }
     const bytes = new Uint8Array(buf);
     let binary = "";
     for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-    return { base64: btoa(binary), mimeType: mime };
-  } catch {
+    const detectedMime = mime === "application/octet-stream" ? "image/jpeg" : mime;
+    return { base64: btoa(binary), mimeType: detectedMime };
+  } catch (e) {
+    console.log(`Image fetch error: ${e} for ${url.substring(0, 100)}`);
     return null;
   }
 }
