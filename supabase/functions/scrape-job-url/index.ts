@@ -295,7 +295,7 @@ serve(async (req) => {
     if (imageUrls.length > 0) {
       console.log(`Fetching ${imageUrls.length} images...`);
       const imageResults = await Promise.allSettled(
-        imageUrls.map((imgUrl) => fetchAsBase64(imgUrl, 5))
+        imageUrls.map((imgUrl) => fetchAsBase64(imgUrl, parsedUrl.toString(), 5))
       );
 
       let addedImages = 0;
