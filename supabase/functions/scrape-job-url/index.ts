@@ -6,21 +6,26 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const EXTRACTION_PROMPT = `You extract job posting information from content. The content may include:
-- Text from a webpage
+const EXTRACTION_PROMPT = `You extract job posting or recruitment information from content. The content may include:
+- Text from a webpage (could be a career/recruitment portal homepage or a specific job posting)
 - A PDF document
-- Images embedded in a job posting page (these often contain the MAIN job description details like responsibilities, requirements, qualifications)
+- Images embedded in a page (these often contain the MAIN job description details like responsibilities, requirements, qualifications)
 
-IMPORTANT: Many Korean job posting sites put the actual job description content inside images, not in text. You MUST carefully read and extract text from ALL provided images, as they likely contain the core job information.
+IMPORTANT RULES:
+1. Many Korean job posting sites put the actual job description content inside images, not in text. You MUST carefully read and extract text from ALL provided images.
+2. Even if the page looks like a career portal homepage or job listing page (not a single specific posting), extract whatever recruitment information you can find - company name, available positions, requirements, etc.
+3. If images contain ANY job-related content (positions, qualifications, requirements, benefits, company info for recruitment), extract it ALL.
+4. The page text may be mostly navigation/UI elements from a JavaScript app - focus more on the IMAGE content which likely has the real information.
+5. ONLY return an error if there is absolutely NO job or recruitment related content in both text AND images.
 
 Return ONLY valid JSON with this exact structure:
 {
   "companyName": "company name (keep original language)",
-  "positionName": "job title/position name (keep original language)",
-  "rawContent": "the COMPLETE job description content combining text AND image content. Include ALL details: responsibilities, requirements, qualifications, benefits, etc. Keep the original language. Be thorough - do not skip any information visible in the images."
+  "positionName": "job title/position name (keep original language, use '채용' or general title if multiple positions)",
+  "rawContent": "the COMPLETE content combining text AND image content. Include ALL details: responsibilities, requirements, qualifications, benefits, job listings, etc. Keep the original language. Be thorough - do not skip any information visible in the images."
 }
 
-If the content does not appear to be a job posting, return:
+ONLY if there is absolutely zero job/recruitment/career related content anywhere, return:
 {"error": "이 페이지는 채용공고가 아닌 것 같습니다."}
 
 CRITICAL: Return ONLY valid JSON. No markdown, no code fences.`;
