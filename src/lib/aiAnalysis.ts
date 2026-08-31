@@ -27,12 +27,23 @@ export async function analyzeWithAI(input: AIAnalysisInput): Promise<AIAnalysisO
 
   if (error) {
     console.error('Edge function error:', error);
-    throw new Error(error.message || 'AI 분석 요청에 실패했습니다.');
+    let message = '';
+    const ctx = (error as { context?: Response }).context;
+    if (ctx && typeof ctx.text === 'function') {
+      try {
+        const body = JSON.parse(await ctx.text());
+        message = body?.message || body?.error || '';
+      } catch {
+        // ignore body parse failure
+      }
+    }
+    throw new Error(message || '분석 서버에 연결하지 못했습니다.');
   }
 
   if (data?.error) {
-    throw new Error(data.message || 'AI 분석 중 오류가 발생했습니다.');
+    throw new Error(data.message || '분석 중 오류가 발생했습니다.');
   }
+
 
   const analysis = validateAnalysis(data.analysis);
   const resumeGuidance = validateResumeGuidance(data.resumeGuidance);

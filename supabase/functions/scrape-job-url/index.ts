@@ -26,7 +26,7 @@ Return ONLY valid JSON with this exact structure:
 }
 
 ONLY if there is absolutely zero job/recruitment/career related content anywhere, return:
-{"error": "이 페이지는 채용공고가 아닌 것 같습니다."}
+{"error": "이 페이지에서 채용공고 내용을 찾을 수 없습니다."}
 
 CRITICAL: Return ONLY valid JSON. No markdown, no code fences.`;
 

@@ -107,6 +107,30 @@ serve(async (req) => {
       );
     }
 
+    const MAX_JD_LENGTH = 30000;
+    const MAX_RESUME_LENGTH = 20000;
+
+    if (typeof jobDescription !== "string" || jobDescription.length > MAX_JD_LENGTH) {
+      return new Response(
+        JSON.stringify({
+          error: "invalid_input",
+          message: `채용공고 내용은 최대 ${MAX_JD_LENGTH.toLocaleString()}자까지 분석할 수 있습니다.`,
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (resumeText && (typeof resumeText !== "string" || resumeText.length > MAX_RESUME_LENGTH)) {
+      return new Response(
+        JSON.stringify({
+          error: "invalid_input",
+          message: `이력서 내용은 최대 ${MAX_RESUME_LENGTH.toLocaleString()}자까지 입력할 수 있습니다.`,
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       return new Response(
