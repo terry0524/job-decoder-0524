@@ -1,4 +1,5 @@
 import { FullAnalysis } from '@/types/jobAnalysis';
+import { JdMatchResult } from '@/lib/jdMatch';
 
 const HISTORY_KEY = 'job-decoder-history';
 const MAX_HISTORY = 10;
@@ -10,6 +11,8 @@ export interface HistoryEntry {
   createdAt: string;
   analysis: FullAnalysis;
   resumeKeywords: string[];
+  /** JD 매칭 결과. 이력서 원문은 저장하지 않고 분석 결과만 보존합니다. */
+  jdMatchResult?: JdMatchResult | null;
 }
 
 export function getHistory(): HistoryEntry[] {
@@ -21,7 +24,11 @@ export function getHistory(): HistoryEntry[] {
   }
 }
 
-export function saveToHistory(analysis: FullAnalysis, resumeKeywords: string[]): void {
+export function saveToHistory(
+  analysis: FullAnalysis,
+  resumeKeywords: string[],
+  jdMatchResult: JdMatchResult | null = null
+): void {
   const history = getHistory();
   const entry: HistoryEntry = {
     id: crypto.randomUUID(),
@@ -30,6 +37,7 @@ export function saveToHistory(analysis: FullAnalysis, resumeKeywords: string[]):
     createdAt: new Date().toISOString(),
     analysis,
     resumeKeywords,
+    jdMatchResult: jdMatchResult ?? null,
   };
   const updated = [entry, ...history.filter(h => 
     !(h.companyName === entry.companyName && h.positionName === entry.positionName)
